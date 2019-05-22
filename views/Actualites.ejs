@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta content="charset=utf-8"/>
+    <title>Back-office Actualités</title>
+    <% include partials/bundleCSS_Actualites %>
+    <% include partials/bundleJS_Actualites %>
+</head>
+<body id="<%= nomCatShort %>" >
+    <div class="bandeauHaut">
+        <div class="TxtAccueil">Catalogue <%= nomCat %></div>
+        <div class="LiensReorientation"><a href="/accueil">Retour accueil</a></div>
+    </div>
+
+    <div style="display: none;">
+        <div id="UF_maxSixe"><%= paramsUploadFile.maxSize %></div>
+        <div id="UF_extensions"><%= paramsUploadFile.extensionsAutorisees %></div>
+        <div id="TempFile"><%= isTempFileExists %></div>
+    </div>
+
+    <div class="divCentralIndex">
+
+        <button class="ClassAjoutRubrique"><i class="fas fa-plus-circle"></i>Ajouter une rubrique</button>
+
+        <div>
+            <% include templates/rubrique %>
+        </div>
+
+    </div>
+
+    <div class="bandeauBas">
+        <button id="SubmitMiseEnLigne" disabled="disabled">Mettre en ligne</button>
+    </div>
+    
+</body>
+</html>

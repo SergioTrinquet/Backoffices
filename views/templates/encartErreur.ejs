@@ -1,0 +1,11 @@
+<div id="Wrapper_Encart">
+    <div>
+        <div id="Encart">
+            <div id="Titre">
+                <i class="fa fa-exclamation-triangle"></i> Erreur   
+            </div>
+            <div id="msg"><%= titre %><span><%= message %></span></div>
+            <% if(typeof stack !== "undefined") { %><div id="stack"><%= stack %></div><% } %>
+        </div>
+    </div>
+</div>

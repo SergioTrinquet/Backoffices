@@ -1,0 +1,129 @@
+/* Page 'Erreur.ejs' et encart suite à erreur sur retour AJAX */
+html, 
+body {
+    height: 100%;
+}
+* {
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #eeeeee;
+    font-family: "Maven Pro",Verdana,Trebuchet MS,Arial,sans-serif;
+    line-height: 17px;
+    margin: 0;
+    color: #232D36;
+    font-size: 1em;
+    box-sizing: border-box;
+}
+#Wrapper_Encart {
+    height: 100%;
+    width:40%;
+    display: table;
+    margin: 0 auto;
+}
+#Wrapper_Encart > div {
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+}
+
+/***********/
+#Wrapper_Encart.retourAjax {
+    position: fixed;
+    z-index: 100;
+    top: 0;
+    width: 100%;
+    z-index: 11;
+}
+#Wrapper_Encart.retourAjax #Encart { 
+    box-sizing: content-box;
+    margin: auto; 
+}
+#Wrapper_Encart.retourAjax #CloseEncart { 
+    font-size: 25px;
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    cursor: pointer;
+    color: #828282;
+ }
+#Wrapper_Encart.retourAjax #CloseEncart:hover { color: #636363; }
+#Wrapper_Encart #stack {
+    overflow-x: auto;
+    max-height: calc(90vh - 400px);
+    min-height: 100px;
+}
+/***********/
+
+
+/* Encart suite à erreur sur retour AJAX */
+
+
+#Wrapper_Encart #Encart {
+    background-color: #ffffff;
+    box-shadow: 0 0 8px rgba(0,0,0,0.2);
+    padding: 30px 40px 40px 40px;
+    max-width: 750px;
+    min-width: 500px;
+    position: relative;
+}
+#Wrapper_Encart #msg {
+    font-size: 15px;
+    padding: 15px 10px;
+    background-color: #ff0000;
+    margin: 0 0 20px;
+    color: #ffffff;
+    font-weight: bold;
+    border-radius: 3px;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+}
+#Wrapper_Encart #msg span {
+    display: block;
+    margin: 8px 0 0 0;
+    font-size: 0.9em;
+}
+#Wrapper_Encart #stack {
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    white-space: pre-wrap;       /* css-3 */
+    white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+    white-space: -pre-wrap;      /* Opera 4-6 */
+    white-space: -o-pre-wrap;    /* Opera 7 */
+    text-align: left;
+    font-weight: bold;
+    font-size: 13px;
+    color: #595959;
+
+
+}
+#Wrapper_Encart #Titre {
+    font-size: 22px;
+    font-weight: bold;
+    color: #828282;
+    margin: 0 0 20px;
+}
+/* FIN Page 'Erreur.ejs' */
+
+/* Surcharge page 'AccesRefuse.html' */
+#Wrapper_Encart.AccesRefuse #Titre {
+    color: #ff0000;
+}
+.msgDetailAccesRefuse {
+    text-align: center;
+    font-weight: bold;
+    font-size: 16px;
+    color: #595959;
+}
+.msgDetailAccesRefuse p {
+    margin: 6px 0;
+}
+.environnement {
+    position: fixed; 
+    top:10px; 
+    right: 15px; 
+    font-size:12px; 
+    color:#989a9c; 
+    font-weight: bold;
+}

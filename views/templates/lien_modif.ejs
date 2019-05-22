@@ -1,0 +1,34 @@
+<div class="WrapperLinkInputs"  id="ModifBlocklien"><!-- TEST au 15/05/19 -->
+
+<div>
+    <label>Intitulé :</label>
+    <input type="text" id="ChampIntituleLien" value="<%= dataLinkToMod.intituleLien %>" />
+</div>
+<div>
+    <label>Fournisseurs :</label>
+    <select multiple="" size="10">
+        <option value="">- aucun fournisseur -</option>
+        <% listeFournisseurs.forEach(function(fnr) { %>
+        <option 
+            value="<%= fnr.CFRCAHP %>" 
+            <%= (dataLinkToMod.listeFnrs.indexOf(fnr.CFRCAHP.toString()) > -1 ? selected="selected" : "") %>
+        ><%= fnr.DFRABREGE %></option>
+        <% }) %>
+    </select>
+</div>
+<div>
+    <label>Hyperlien :</label>
+    <span id="inputHyperLien">
+        <input type="text" id="ChampHyperlien_Mod" disabled="disabled" value="<%= dataLinkToMod.hrefLien %>" />
+        <span id="BtChxModifCible">Modifier</span>
+    <span>
+</div>
+    
+    <!-- TEST au 15/05/19 -->
+    <div>
+        <button class="ClassAnnulLien"><i class="fas fa-undo"></i>Annuler Modif.</button>
+        <button class="ClassEnrLien"><i class="fas fa-check"></i>Enregistrer</button>
+    </div>
+
+</div>
+    <!-- FIN TEST au 15/05/19 -->

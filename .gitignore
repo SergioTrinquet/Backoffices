@@ -1,0 +1,24 @@
+# Logs
+log/*.log
+
+# Dependency directories
+node_modules/
+
+# Fichier de config
+config/development.json
+config/production.json
+
+.vscode/
+
+dist
+
+# Fichiers uploadés
+public/data/actualites/*/tempoUploads/*
+
+# Fichiers json temporaires
+*_TEMP.json
+
+# Autres
+public/data/actualites/biomedi/SimulServeurProd
+public/data/actualites/biomedi/JSON_pourDev
+

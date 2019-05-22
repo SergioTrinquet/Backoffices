@@ -1,0 +1,913 @@
+body{
+    background-color:#ffffff;
+    font-family: "Maven Pro",Verdana,Trebuchet MS,Arial,sans-serif; 
+    font-size: 12px;
+	color: #25446f;
+    font-weight: normal;
+	letter-spacing: normal;
+	
+    word-spacing: normal;
+    
+	scrollbar-face-color: white;
+	scrollbar-track-color: white;
+	scrollbar-arrow-color: lightgray;
+	scrollbar-shadow-color: white;
+	scrollbar-highlight-color: white;
+	scrollbar-3dlight-color: lightgray;
+	scrollbar-darkshadow-color: lightgray;
+	
+	text-align:left;
+}
+
+input {
+	border: 1px solid #CCCCCC;
+    font-family: "Maven Pro",Verdana,Trebuchet MS,Arial,sans-serif; 
+    font-size: 12px;
+	font-weight: bold;
+	color: #333333;
+}
+
+form {
+	margin: 0px;
+	text-align:left;
+}
+
+img {
+	margin: 0px;
+	padding: 0px;
+	border: 0px;
+	width:14px;
+	height:14px;
+	float:left;
+	cursor:move;
+	margin-top:1px;
+}
+
+.TxtAccueil{
+	text-align: center;
+	font-weight: bold;
+    font-size: 15px;
+    padding: 0;
+}
+
+.divCentralIndex {
+	width:800px;
+	margin: 80px auto 100px auto;
+}
+
+.BandeauTitreLeft { 
+	margin-top:30px;
+	clear:both;
+    margin-left: 34px;
+    min-width: 700px;
+}
+#Biomedi .divCentralIndex .BandeauTitreLeft { background-color: #dbeaef; }
+
+#Resto .divCentralIndex .BandeauTitreLeft { background: url(/Imgs/Deg_Info_Resto_Left.gif) #ffe7de repeat-y left 50%; }
+#Pharma .divCentralIndex .BandeauTitreLeft { background: url(/Imgs/Deg_Info_Pharma_Left.gif) #e5ffcc repeat-y left 50%; }
+#Dispo .divCentralIndex .BandeauTitreLeft {
+    /*Version originale : mis en comm. le 20/12/16*/
+	/*background: url(/Imgs/Deg_Info_Dispo_Left.gif) #fff2cc repeat-y left 50%;*/
+}
+#DMI .divCentralIndex .BandeauTitreLeft { background: url(/Imgs/Deg_Info_DMI_Left.gif) #eeedff repeat-y left 50%; }
+#Eco .divCentralIndex .BandeauTitreLeft {
+    /*Version originale : mis en comm. le 20/12/16*/
+	/*background: url(/Imgs/Deg_Info_Eco_Left.gif) #e2f6fd repeat-y left 50%;*/
+}
+#Nurs .divCentralIndex .BandeauTitreLeft { background: url(/Imgs/Deg_Info_Nurs_Left.gif) #fff3b2 repeat-y left 50%; }
+#Solu .divCentralIndex .BandeauTitreLeft { background: url(/Imgs/Deg_Info_Solu_Left.gif) #def2de repeat-y left 50%; }
+#Liga .divCentralIndex .BandeauTitreLeft { background: url(/Imgs/Deg_Info_Liga_Left.gif) #ffe9ff repeat-y left 50%; }
+#Nutri .divCentralIndex .BandeauTitreLeft { background: url(/Imgs/Deg_Info_Nutri_Left.gif) #f3f7cd repeat-y left 50%; }
+#Hygi .divCentralIndex .BandeauTitreLeft { background: url(/Imgs/Deg_Info_Hygi_Left.gif) #ffefe0 repeat-y left 50%; }
+
+/*V2*/
+.BandeauTitre_Gauche {
+    border-radius: 4px 0 0 4px;
+    box-shadow: 0 -3px rgba(0, 0, 0, 0.08) inset;
+    cursor: pointer;
+    float: left;
+    height: 32px;
+    margin-left: -31px;
+    width: 31px;
+}
+#Biomedi .divCentralIndex .BandeauTitre_Gauche { background-color: #C3E0E8; }
+#Dispo .divCentralIndex .BandeauTitre_Gauche { background-color: #fee372; }
+#Eco .divCentralIndex .BandeauTitre_Gauche { background-color: #abe8fd; }
+#DMI .divCentralIndex .BandeauTitre_Gauche { background-color: #c5c2f9; }
+#Hygi .divCentralIndex .BandeauTitre_Gauche { background-color: #ffca91; }
+#Liga .divCentralIndex .BandeauTitre_Gauche { background-color: #ffb2ff; }
+#Pharma .divCentralIndex .BandeauTitre_Gauche { background-color: #9fe281; }
+#Nutri .divCentralIndex .BandeauTitre_Gauche { background-color: #d8e475; }
+#Resto .divCentralIndex .BandeauTitre_Gauche { background-color: #ffc4c4; }
+#Nurs .divCentralIndex .BandeauTitre_Gauche { background-color: #edcc7b; }
+#Solu .divCentralIndex .BandeauTitre_Gauche { background-color: #a8e7b8; }
+/*Fin V2*/
+
+
+.BandeauTitreRight{
+    border-radius: 0 4px 4px 0;
+    box-shadow: 0 -3px rgba(0, 0, 0, 0.08) inset;
+    height: 32px;
+    min-width: 400px;
+    position: relative;
+}
+#Resto .divCentralIndex .BandeauTitreRight{ background: #ffd5d5; }
+#Pharma .divCentralIndex .BandeauTitreRight{ background: #bdf0ab; }
+#Dispo .divCentralIndex .BandeauTitreRight{ background: #ffeea1; }
+#DMI .divCentralIndex .BandeauTitreRight{ background: #d8d6ff; }
+#Eco .divCentralIndex .BandeauTitreRight{ background: #cfeff9; }
+#Nurs .divCentralIndex .BandeauTitreRight{ background: #f6e0a5; }
+#Solu .divCentralIndex .BandeauTitreRight{ background: #baf1c8; }
+#Liga .divCentralIndex .BandeauTitreRight{ background: #ffccff; }
+#Nutri .divCentralIndex .BandeauTitreRight{ background: #e6ed93; }
+#Hygi .divCentralIndex .BandeauTitreRight{ background: #ffd9a2; }
+
+
+.TitreBandeau {
+    display: table-cell;
+    font-family: "Trebuchet MS",sans-serif;
+    font-size: 11px;
+    font-weight: bold;
+    height: 29px;
+    line-height: 10px;
+    padding: 1px 8px;
+    vertical-align: middle;
+    text-shadow: 0 1px 1px #ffffff;
+}
+#Resto .divCentralIndex .TitreBandeau { color: #b44c49; }
+#Pharma .divCentralIndex .TitreBandeau { color: #507a3c; }
+#Dispo .divCentralIndex .TitreBandeau { color: #ab8400; }
+#DMI .divCentralIndex .TitreBandeau { color: #5954a5; }
+#Eco .divCentralIndex.TitreBandeau { color: #0178aa; }
+#Nurs .divCentralIndex .TitreBandeau { color: #a37f00; }
+#Solu .divCentralIndex .TitreBandeau { color: #357b47; }
+#Liga .divCentralIndex .TitreBandeau { color: #994999; }
+#Nutri .divCentralIndex .TitreBandeau { color: #758100; }
+#Hygi .divCentralIndex .TitreBandeau { color: #b96f01; }
+
+.TitreBandeau .Intitule { display: inline-block; }
+
+button {
+	text-align: center;
+	font-weight: bold;
+	cursor: pointer;
+	box-sizing: border-box;
+	font-size: 11px;
+	font-family: "Maven Pro",Verdana,Trebuchet MS,Arial,sans-serif;
+	background-color:#ededed;
+	color:#6e7f9a;
+	border: solid 1px #6e7f9a;
+	box-shadow: 0 0 2px rgba(0,0,0,0.3);
+}
+button > i { margin: 0 5px 0 0; }
+button:hover:not(:disabled) { background-color:#d4d4d4; }
+button:disabled { 
+	opacity: 0.3; 
+	cursor: not-allowed;
+}
+
+/*
+.EncartContact{
+	border:gainsboro 1px solid;
+	padding:10px;
+	width:340px;
+}
+#Resto .divCentralIndex .EncartContact {
+	background-color:#ffe7de;
+}
+#Pharma .divCentralIndex .EncartContact {
+	background-color:#e5ffcc;
+}
+
+.Mailto {
+	background:url(/Imgs/link.gif) no-repeat 0px 2px;
+	padding-left:12px;
+}
+*/
+
+.NewsAccueil{ padding: 10px 0 0 20px; }
+
+.News {
+	/*clear:both;*/
+    line-height: 16px;
+    padding: 3px 0;
+}
+
+.News a {
+	padding-left: 14px;
+	background: url("/Imgs/LinkArrow.png") no-repeat 4px 3px;
+	margin-right:6px;
+	text-decoration:none;
+	color: #3873ae;
+	line-height:14px;
+}
+.News a:hover {
+	background-color: #eef5f8;
+    color: #014992;
+    text-decoration: none;
+}
+
+
+/* #DivBtAddRubrique{ margin-bottom: 20px; } */
+
+.ClassAjoutRubrique {
+	padding: 3px 10px;
+	background-color:#6e7f9a;
+	color: #ffffff;
+    display: block;
+    margin: 0 auto 20px auto;
+    width: 210px;
+}
+
+.ClassModRubrique,
+.ClassAnnulRubrique {
+	margin-left: 10px;
+	padding: 2px 8px;
+}
+
+.ClassSupprRubrique,
+.ClassEnrRubrique {
+	margin-left: 5px;
+	padding: 2px 8px;
+}
+
+.ClassModLien,
+.ClassSupprLien {
+	padding: 1px 8px;
+	margin-right: 6px;
+}
+.ClassAnnulLien {
+	padding: 1px 8px;
+    margin: 0 5px 10px 20px;
+}
+.ClassEnrLien {
+	padding: 1px 8px;
+    margin: 0 0 10px 5px;
+}
+
+.ClassModLien i,
+.ClassModRubrique i { 
+	color: rgb(49, 142, 255);
+	font-size: 10px; 
+}
+.ClassSupprLien i,
+.ClassSupprRubrique i { 
+	color: #ff0000;
+	font-size: 11px; 
+}
+.ClassAnnulLien i,
+.ClassAnnulRubrique i { 
+	color: #ff8800;
+	font-size: 10px; 
+}
+.ClassEnrLien i,
+.ClassEnrRubrique i { 
+	color: #2ebd02;
+	font-size: 11px; 
+}
+
+
+.ClassAjoutLien {
+	padding:2px 8px;
+	margin: 20px 0 5px 20px;
+}
+.ClassAjoutLien i {
+	color: rgb(0, 183, 255);
+}
+
+
+.ClassModLien.Hidden,
+.ClassSupprLien.Hidden,
+.ClassAnnulLien.Hidden,
+.ClassEnrLien.Hidden,
+.ClassModRubrique.Hidden,
+.ClassSupprRubrique.Hidden,
+.ClassAnnulRubrique.Hidden,
+.ClassEnrRubrique.Hidden,
+.TitreBandeau .Intitule.Hidden,
+[data-type="lien"] > a.Hidden { display: none; }
+
+
+
+#Bt_Record,
+#Bt_Cancel {
+	text-align: center;
+	background-color: #5e5e5e;
+	color: #ffffff;
+	font-size: 12px;
+	cursor: pointer;
+    padding: 3px 20px;
+    margin: 0 5px 0 80px;
+}
+#Bt_Record { margin: 0 0 0 5px; }
+#Bt_Cancel { margin: 0 5px 0 80px; }
+
+input,
+.WrapperLinkInputs select {
+	background-color:#fffc9d;
+	border:solid 1px gray;
+}
+/*input[type="file"] { background-color:#fffc9d; }*/
+
+input.error,
+.WrapperLinkInputs select.error,
+.divCentralIndex .jFiler-input-dragDrop.error {
+	background-color: #FFEFF1;
+	border-color: #DD0019;
+}
+
+.TitreBandeau input[type="text"] { width: 450px; }
+
+.WrapperLinkInputs input[type="text"],
+.WrapperLinkInputs select {
+	width: 400px;
+	margin-bottom: 6px;
+}
+
+.ClassDivDisabledUploadFile { width: 400px; }
+
+.WrapperLinkInputs select { height:100px; }
+
+.WrapperLinkInputs #ChampHyperlien_Mod { cursor: not-allowed; }
+
+.DivBtAddLink{ margin: 20px 20px 0 20px; }
+
+
+.WrapperLinkInputs {
+	padding-bottom:4px;
+    background-color: #eeeeee;
+    padding: 15px;
+}
+.BandeauTitreLeft + .WrapperLinkInputs { /* Qd juste après un bloc d'entete 'Rubrique' : Cas ou création de rubrique */
+	margin: 10px 0 30px 0;
+}
+
+.ClassInputAffichLink {
+	width:250px;
+}
+
+/*.LegendLinkIntitule, 
+.LegendLinkHyperLien, 
+.LegendLinkFournisseurs,*/
+.WrapperLinkInputs label {
+	font-size: 12px;
+	font-weight: bold;
+	display: inline-block;
+	text-align: right;
+	vertical-align: top;
+	width: 80px;
+}
+
+#BtChxModifCible {
+	background-color: #5e5e5e;
+    color:#ffffff;
+	font-weight: bold;
+	cursor: pointer;
+	text-align: center;
+	padding: 1px 15px;
+}
+
+#EncartChoixTypelien {
+	position: fixed;
+	z-index: 11;
+	top: 40%;
+	left: calc(50% - 180px);
+	width: 360px;
+	box-sizing: border-box;
+	background:#fcf2c3;
+	border: solid 3px #f3c904;
+	padding: 30px;
+    font-weight:bold;
+	text-align: center;
+	line-height: 15px;
+	font-size: 14px;
+}
+#EncartChoixTypelien > div { margin: 0 0 15px 0; }
+#EncartChoixTypelien > span {
+	display: inline-block;
+	background: #b05b5b;
+	color:#ffffff;
+	width: 120px;
+	padding: 4px 0;
+	cursor: pointer;
+}
+#Bt_LienFichier { margin-right: 20px; }
+#EncartChoixTypelien > span:hover { background: #8b4141; }
+
+
+
+
+
+.ui-state-highlight{
+	background-color: #ffd900;
+	height: 15px;
+}
+
+
+/*Encart pour msg après validation du formulaire*/
+#MsgEncartAttente{
+    width:300px;
+    background:#02ec5a url(/Imgs/FdDegrVert.gif) repeat-x top;
+	border:solid 2px #02af43;
+	color:#ffffff;
+	padding:20px;
+	font-weight:bold;
+	font-size:12px;
+	line-height:16px;
+	text-align:center;
+	position:absolute;
+	z-index:20;
+	/*margin-left:-150px;
+	margin-top:-75px;*/
+	display:none;
+	/*Pour forcer le retour à la ligne qd le txt (même sans espace!) est trop long*/
+	white-space: pre-wrap;       /* css-3 */
+	white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+	white-space: -pre-wrap;      /* Opera 4-6 */
+	white-space: -o-pre-wrap;    /* Opera 7 */
+	word-wrap: break-word;       /* Internet Explorer 5.5+ */
+}
+
+.ClassAjaxLoader{
+    float:none;
+    width:128px;
+    height:15px;
+    cursor:wait;
+}
+
+.DivAjaxLoader{
+    padding-bottom:10px;
+}
+
+/*Ajax loader pdt validation d'un lien*/
+#DivAjaxLoaderLink{
+    position:absolute;
+	z-index:20;
+	margin-top:100px;
+	margin-left:367px;
+    display:none;
+}
+.ClassAjaxLoaderLink{
+    width:66px;
+    height:66px;
+    cursor:wait;
+}
+
+
+/*Encart pour msg qd fichier uploadé est trop grand ou pas au bon format*/
+#MsgPbSizeUploadedFile, #MsgPbAutre, #MsgProbleme, #MsgProblemeAJAX{
+	width:280px;
+	background:#ec9091 url(/Imgs/FdDegrRouge_15x98_V2.gif) repeat-x top;
+	border:solid 2px #ef5858;
+	color:#ffffff;
+	padding:10px;
+	font-weight:bold;
+	text-align:center;
+	position:absolute;
+	z-index:20;
+	/*margin-left:-140px;
+	margin-top:-40px;*/
+	display:none;
+	/*Pour forcer le retour à la ligne qd le txt (même sans espace!) est trop long*/
+	white-space: pre-wrap;       /* css-3 */
+	white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+	white-space: -pre-wrap;      /* Opera 4-6 */
+	white-space: -o-pre-wrap;    /* Opera 7 */
+	word-wrap: break-word;       /* Internet Explorer 5.5+ */
+}
+
+#MsgPbAutre div, #MsgProbleme div, #MsgProblemeAJAX div{
+    font-style:italic;
+    padding-bottom:5px;
+    font-size:12px;
+}
+
+#MsgPbSizeUploadedFile span, #MsgPbAutre span, #MsgProbleme span, #MsgProblemeAJAX span{
+	text-decoration:underline;
+}
+
+#MsgPb_Ombre{
+	width:280px;
+	background-color:#48463b;
+	border:solid 2px #48463b;
+	padding:10px;
+	font-weight:bold;
+	text-align:center;
+	position:absolute;
+	z-index:1;
+	/* Pour IE, il faut absolument mettre une largeur, alors soit width=100%,
+	soit c'est un div positionné et dimensionné comme dans cet exemple.*/
+	filter:alpha(opacity=30);
+	-moz-opacity:0.30;
+	opacity: 0.30;
+	/*margin-left:-140px;
+	margin-top:-40px;*/
+	/*Pour forcer le retour à la ligne qd le txt (même sans espace!) est trop long*/
+	white-space: pre-wrap;       /* css-3 */
+	white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+	white-space: -pre-wrap;      /* Opera 4-6 */
+	white-space: -o-pre-wrap;    /* Opera 7 */
+	word-wrap: break-word;       /* Internet Explorer 5.5+ */
+}
+
+.Close{
+	float:right;
+	height:15px;
+	width:12px;
+	margin-top:-4px;
+	margin-right:-7px;
+	cursor:pointer;
+	color:#ffffff;
+	font-weight:bold;
+	font-size:12px;
+	font-family:Arial, Trebuchet MS;
+}
+
+.bandeauBas #SubmitMiseEnLigne {
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+	background-color: #00b909;
+	border: 2px solid #ffffff;
+	color: #ffffff;
+	font-family: "Maven Pro";
+	font-size: 14px;
+	padding: 6px 55px;
+    display: block;
+    margin: 0 auto;
+}
+.bandeauBas #SubmitMiseEnLigne:hover { background-color: #00A805; }
+.bandeauBas #SubmitMiseEnLigne:disabled {
+	cursor: not-allowed;
+	background-color: #006B01;
+	border-color:#C4C4B9;
+	color:#C4C4B9;
+}
+
+
+
+.LiensReorientation {
+    font-size:12px;
+    position:relative;
+    z-index:19;
+    position: absolute;
+    padding: 0;
+    top:11px;
+    right: 15px;
+}
+.LiensReorientation a{
+    text-decoration:underline;
+	color: #5192d4;
+}
+
+
+.MsgDemandeActivationJS {
+	width:475px;
+	line-height:12px;
+	padding:3px;
+	margin:6px;
+	color:red;
+	background-color:#fff0f0;
+	border:solid 1px #ffa7a7;
+	font-style:italic;
+}
+
+#InfoBulle{
+	position:absolute;	
+	z-index:100;
+	visibility:hidden;
+	width:210px;
+	padding: 10px 12px;
+	font-size: 11px;
+	font-weight:bold;
+	font-style:italic;
+	text-align:center;
+	color:#ffffff;
+	line-height:13px;
+	margin-left:-19px;
+	margin-top:25px;
+	background:url(/Imgs/EncartAlerte.png) no-repeat left top;
+	padding: 30px 14px 12px 14px;
+}
+
+
+
+/** CSS spécifique pour le Développement Durable **/
+#DevDur{
+    height: 100%;
+	padding: 0;
+    background:url(/Imgs/Ciel.png) repeat-x top;
+    overflow-x:hidden;/*Rajouté le 30/11/10*/
+}
+
+#DevDur body{
+    height: 100%;
+	padding: 0;
+    background:url(/Imgs/SmallNuage.png) no-repeat 15% 338px;
+    /*overflow-x:hidden;*//*Mis en comm. le 30/11/10*/
+}
+
+#DevDur .LiensReorientation{
+    position:absolute;
+    z-index:19;
+    right:20px;
+    top:15px;    
+    color: #ffffff;
+}
+#DevDur .LiensReorientation a{
+    text-decoration:none;
+	color: #ffffff;
+}
+
+#DevDur .TxtAccueil{
+    display:none;    
+}
+
+#DevDur .DD_global{
+    min-height: 100%;
+	width: 750px;
+	overflow: hidden;
+	margin-left: auto;
+	margin-right: auto;
+	background:url(/Imgs/EncartBlanc.png) no-repeat 44px 0px;
+}
+
+#DevDur .DD_logo{
+    background:url(/Imgs/Logo_DevDur.png) no-repeat top left;
+    width:349px;
+    height:241px;
+    position:absolute;
+    z-index:3;
+    margin-left:-94px; 
+}
+
+#DevDur .DD_nuage{
+    width:433px;
+    min-height: 100%;
+    overflow: hidden;
+    position:absolute;
+    z-index:1;
+    margin-left:705px;
+    background:url(/Imgs/BigNuage.png) no-repeat top left;
+}
+
+#DevDurable .divCentralIndex {
+    padding: 145px 84px 90px 84px;
+}
+* html #DevDurable .divCentralIndex {
+    padding: 145px 85px 90px 85px;
+}
+#DevDurable .divCentralIndex > :first-child {
+	margin-top: 20px;
+}
+#DevDurable .divCentralIndex a:first-child {
+	position:relative;
+	z-index:6;
+}
+
+#DevDur .ClassAjoutRubrique, 
+#DevDur .ClassAjoutLien, 
+#DevDur .ClassModRubrique, 
+#DevDur .ClassSupprRubrique{
+	position:relative;
+	z-index:6;
+}
+
+#DevDur .BandeauTitreLeft {
+    width 600px;
+    margin-left: 0;
+}
+/*V2*/
+#DevDur .BandeauTitre_Gauche,
+#DevDur .BandeauTitreRight { box-shadow: none; }
+#DevDur .TitreBandeau{
+    font-family:Georgia,serif;
+    font-size:23px;
+    line-height:30px;
+    color:#669f31;
+    padding:0px;
+}
+
+#DevDur .TitreBandeau span{
+    margin-top:8px;
+    font-family:Verdana, Arial, Helvetica, sans-serif !important;
+	font-size: 11px;
+	color:#6e7f9a;
+    line-height:normal;
+}
+
+#DevDur .NewsAccueil{
+    padding:5px 0px 0px 0px;
+}
+
+/*#DevDur .DivBtAddLink{
+	padding:8px 0px 11px 0px;	
+}*/
+
+#DevDur .TitreBandeau input[type="text"], #DevDur #ChampIntituleLien{
+	position:relative;
+	z-index:4;
+}
+
+#DevDur .ClassAEnr_NEW{
+   padding-right:0px;
+}
+
+#DevDur .News{
+    width:585px;
+    padding:5px 0px 4px 0px;
+}
+#DevDur .News a{
+    background: url(/Imgs/link.gif) no-repeat 2px 2px;
+}
+#DevDur .bandeauHaut {
+    background-color: transparent !important;
+}
+/*V2*/
+span[class^="Class"] {
+    color:#223a5f;
+}
+.bandeauHaut {
+    top: 0;
+    color: #ffffff;
+    padding:10px 0;
+}
+.bandeauHaut a { color: #ffffff; }
+.bandeauBas {
+    bottom: 0;
+    padding: 8px 0;
+}
+.bandeauHaut, .bandeauBas {
+    background-color: rgba(30, 30, 30, 0.5);
+    position: fixed;
+    width: 100%;
+    z-index: 100;
+    left: 0;
+}
+/*Fin V2*/
+
+.Grip {
+	cursor: pointer;
+}
+.Grip.disabled {
+	color: #ff0000;
+	cursor: not-allowed;
+}
+
+
+
+/* Surcharge sur 'jquery.filer-dragdropbox-theme.css' pour l'affichage des fichiers téléchargés */
+.divCentralIndex .jFiler-input-inner { 
+    display: table; 
+    width: 100%;
+}
+.wrapjFilerIcon {
+    display: table-cell; 
+    width: 25%; 
+    text-align: right;
+}
+.divCentralIndex .jFiler-input-icon {
+    display: inline-block; 
+    vertical-align: middle;
+}
+.divCentralIndex .jFiler-input-text {
+    display: table-cell;
+    vertical-align: middle;  
+    color: #a7b1b8;
+    text-align: left; 
+    padding-left:8px;
+}
+.divCentralIndex .jFiler {
+	width: 70%;
+	display: inline-block;
+}
+.divCentralIndex .jFiler-input-dragDrop {
+    width:100%;
+    border: 2px dashed #778188;
+    background-color: #f4f4f4;
+    padding: 10px 20px;
+    margin: 0 0 7px 0;
+	cursor: pointer;
+}
+    .divCentralIndex .jFiler-disabled .jFiler-input-dragDrop {
+    background-color: #e8e8e8;
+    border: 2px dashed #b7c1c8;
+    cursor: not-allowed;
+}
+
+.divCentralIndex .jFiler-disabled .jFiler-input-dragDrop:hover + #tooltipDisabled {
+    display:block;
+}
+    #tooltipDisabled {    
+        position: absolute;
+        margin: -97px 0 0;
+        color:#ffffff;
+        background-color:#677178;
+        text-align: center;
+        line-height: 11px;
+        font-weight: bold;
+        font-size: 12px;
+        line-height: 13px;
+        border-radius: 3px;
+        padding: 7px 10px;
+        width: 586px;
+        box-sizing: border-box;
+        box-shadow: 0 0 12px rgba(0, 0, 0, 0.3);
+        display: none;
+    }
+    #tooltipDisabled:after {
+        top: 100%;
+	    left: 50%;
+	    border: solid transparent;
+	    content: " ";
+	    height: 0;
+	    width: 0;
+	    position: absolute;
+	    pointer-events: none;
+	    border-color: rgba(103, 113, 120, 0);
+	    border-top-color: #677178;
+	    border-width: 15px;
+	    margin: 0 0 0 -15px;
+    }
+
+    .divCentralIndex .jFiler-input-dragDrop .jFiler-input-icon {
+        font-size: 28px;
+        margin: 0;
+    }
+
+/* Surcharge sur 'jquery.filer.css' */
+.jFiler-input-text { font-weight: bold; }
+.divCentralIndex .jFiler-items-default .jFiler-item {
+    padding: 7px 10px;
+    border: 1px solid #50a1e9;
+    margin-bottom:5px;
+}
+.divCentralIndex .jFiler-items-default .jFiler-item .jFiler-item-icon {
+    font-size: 22px;
+    margin-top:3px;
+}
+.divCentralIndex .jFiler-items-default .jFiler-item .jFiler-item-others span { padding-right:initial; }
+.divCentralIndex .jFiler-items-default .jFiler-item .jFiler-item-title { font-size:13px; }
+.divCentralIndex .jFiler-jProgressBar { margin-top: 0; }
+
+
+/* Popin */
+.Popin {
+    background-color: #f5f5f5;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    cursor: default;
+    font-size: 14px;
+    line-height: 15px;
+    text-align: center;
+    position: fixed;
+    z-index:20000;
+    left: 50%;
+    top: 50%;
+    width: 400px;
+    padding: 30px;
+	box-sizing: content-box;
+    margin:-100px 0 0 -200px;
+}
+.Popin.Hidden { display: none; }
+.Popin span { font-style: italic; }
+.Popin b { font-size: 13px; }
+.ClosePopin {
+    background-color: #0072FF;
+    border-width: 0;
+    border-radius: 2px;
+    color: #ffffff;
+    cursor: pointer;
+    font-family: "Maven Pro";
+    font-size: 14px;
+    font-weight: bold;
+    padding: 3px 35px;
+    margin:15px auto 0;
+    display: block;
+}
+.ClosePopin:hover { background-color: #0068E8; }
+
+
+.Popin.Error {
+	background-color: #db0000;
+	border: solid 3px #ffffff;
+	color:#ffffff;
+	top:20%;
+	left:33%;
+	width:34%;
+	margin:0 0 0 -30px;
+	word-wrap: break-word;
+}
+.Popin.Error div { margin: 5px 0; }
+.Popin.Error span { font-style: italic; }
+.Popin.Error .Titre { 
+	font-size: 15px; 
+	font-weight: bold;
+}
+.Popin.Error .ClosePopin {
+	background-color: #ffffff;
+	color: #DB0000;
+}
+/* FIN Popin */

@@ -1,0 +1,23 @@
+<div class="WrapperLinkInputs" id="DivNewLink">
+    <div>
+        <label>Intitulé :</label>
+        <input type="text" id="ChampIntituleLien">
+    </div>
+    <div>
+        <label>Fournisseurs :</label>
+        <select multiple="" size="10">
+            <option value="" selected="selected">- aucun fournisseur -</option>
+            <% listeFournisseurs.forEach(function(fnr) { %>
+            <option value="<%= fnr.CFRCAHP %>"><%= fnr.DFRABREGE %></option>
+            <% }) %>
+        </select>
+    </div>
+    <div>
+        <label>Hyperlien :</label>
+        <% include cible %>
+    </div>
+    <div>
+        <button id="Bt_Cancel" class="/*ClassAnnul_NEW*/"><i class="fas fa-undo"></i>Annuler</button>
+        <button id="Bt_Record" class="/*ClassAEnr_NEW*/"><i class="fas fa-check"></i>Enregistrer</button>
+    </div>
+</div>  

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta content="charset=utf-8"/>
+    <title>Accueil des back-offices</title>
+    <% include partials/bundleCSS %>
+    <link href="/Styles/accueil.css" type="text/css" rel="stylesheet" />
+    
+    <% include partials/bundleJS %>
+    <script type="text/javascript" src="/scripts/Accueil.js"></script>
+</head>
+<body>
+    <div class="masque Hidden"></div>
+    <div class="NomUtilisateur">Bienvenue <%= UserName %></div>
+
+    <div>
+
+        <div class="EncartPrincipal fadeInUp">
+            <h2>Back-office des catalogues en ligne</h2>
+            
+             <form id="FormSelectService">
+               <div class="WrapSelectService">
+                    <select id="SelectBO">
+                        <option value="" >Choisissez un catalogue</option>
+                        <% data_ListeDeroulante.forEach(function(d){ %> 
+                            <option value="<%= d.idCat %>"><%= d.nomCat %></option>
+                        <% }) %>
+                    </select>
+                </div>
+                <div id="propositionBackOffices">
+                    <div></div>
+                </div>
+            </form>
+
+            <!--<form method="post" id="FormBOPromos" action="/Promotions/Promotions.aspx" target="Promos">
+                <input type="hidden" value="<%//=Identifiant%>" name="User" />
+            </form>-->
+        </div>
+
+    </div>
+
+</body>
+</html>

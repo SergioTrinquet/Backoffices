@@ -1,0 +1,93 @@
+{
+"rubriques": [
+	{
+		"rubrique": "PRESENTATIONS ET ATELIERS APM 2011-2012",
+		"liens": [
+			{
+				"intitule": "APM 2011-2012",
+				"typeLien": "fichier",
+				"cible": "APM 2011-2012_Light.pdf",
+				"fournisseurs": "12189,31012"
+			},
+			{
+				"intitule": "Tableaux Comparatifs 2011-2012",
+				"typeLien": "fichier",
+				"cible": "TABLEAUX COMPARATIFS APM 2011-2012.pdf",
+				"fournisseurs": ""
+			}
+		]
+	},
+	{
+		"rubrique": "Reglementation",
+		"liens": [
+			{
+				"intitule": "00000000000000",
+				"typeLien": "fichier",
+				"cible": "Fiche bon usage psts avril 2011.pdf",
+				"fournisseurs": "12457"
+			},
+			{
+				"intitule": "1111111111111111",
+				"typeLien": "fichier",
+				"cible": "No_reply@cahpp.fr_20190319_115711.pdf",
+				"fournisseurs": ""
+			},
+			{
+				"intitule": "2222222222222222222",
+				"typeLien": "fichier",
+				"cible": "No_reply@cahpp.fr_20190319_115735.pdf",
+				"fournisseurs": ""
+			},
+						{
+				"intitule": "33333333333333333333",
+				"typeLien": "fichier",
+				"cible": "33333333333333333333.pdf",
+				"fournisseurs": "12457"
+			},
+			{
+				"intitule": "444444444444444444444",
+				"typeLien": "fichier",
+				"cible": "444444444444444444444.pdf",
+				"fournisseurs": ""
+			},
+			{
+				"intitule": "555555555555",
+				"typeLien": "fichier",
+				"cible": "555555555555.pdf",
+				"fournisseurs": "31042"
+			}
+			
+		]
+	},
+	{
+		"rubrique": "REUNION DE MARCHE DM",
+		"liens": [
+			{
+				"intitule": "Support de pr�sentation - R�unions de March�s 2018 - MCO",
+				"typeLien": "fichier",
+				"cible": "MCO_2018_COMPILATION_FINAL.pdf",
+				"fournisseurs": ""
+			},
+			{
+				"intitule": "MEDTRONIC : Le NIM - Chirurgie de la thyro�de",
+				"typeLien": "fichier",
+				"cible": "WWWWWWWW.pdf",
+				"fournisseurs": ""
+			},
+			{
+				"intitule": "Juin 2018 - JOHNSON AND JOHNSON - Acquisition et distribution de Megadyne",
+				"typeLien": "fichier",
+				"cible": "Lettre_information groupement.pdf",
+				"fournisseurs": "20000, 20001"
+			},
+						{
+				"intitule": "Support de pr�sentation - R�unions de March�s 2017 - MCO",
+				"typeLien": "fichier",
+				"cible": "MCOMCO.pdf",
+				"fournisseurs": "12356"
+			}
+		]
+	}
+]
+
+}
