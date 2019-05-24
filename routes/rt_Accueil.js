@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const rolesConfig = require('config').get('roles');
 
-var dataListeDeroulante = [];
+var dataListeDeroulante;
 
 // Page 'Acualités' est la page par défaut
 router.get('/', function(req, res, next) {
@@ -10,13 +10,14 @@ router.get('/', function(req, res, next) {
 
 router.get('/accueil', function(req, res, next) {
     try {
+        //let dataListeDeroulante = []; // réinitialisation
         dataListeDeroulante = []; // réinitialisation
         
         // Interrogation bdd pour connaitre catalogues auxquels a droit l'utilisateur
         rolesConfig.forEach(function(roleConf) {
 
             //req.Rights.forEach(function(right) { // Avec 'app.use(authentication);'
-                req.app.get('Rights').forEach(function(right) { // Avec module 'authentication_TEST()'
+            req.app.get('Rights').forEach(function(right) { // Avec module 'authentication_TEST()'
                 if(right === roleConf.role) {
                     dataListeDeroulante.push({
                         role: roleConf.role,
@@ -29,6 +30,8 @@ router.get('/accueil', function(req, res, next) {
 
         });
 
+        //req.app.set('dataListeDeroulante', dataListeDeroulante); //TEST
+
         res.render('Accueil', {data_ListeDeroulante: dataListeDeroulante});
 
     } catch(err) {
@@ -40,7 +43,10 @@ router.get('/accueil', function(req, res, next) {
 // Sélection d'un catalogue dans la liste déroulante
 router.get('/accueil/:idcat', function(req, res, next) {
     try {   
-        var listeBO = null;
+        let listeBO = null;
+
+        //let dataListeDeroulante = req.app.get('dataListeDeroulante'); //TEST
+
         dataListeDeroulante.forEach(function(roleConf) {
             if(roleConf.idCat == req.params.idcat) {
                 listeBO = {

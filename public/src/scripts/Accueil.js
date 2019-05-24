@@ -49,13 +49,13 @@ $(function () {
                 BackOfficesWrap.empty();
                 var listeBO = data.liste_BO;
                 for(var i=0; i < listeBO.backoffices.length; i++) {
-                    //BackOfficesWrap.append("<span data-href='/" + listeBO.backoffices[i].page + "/" + listeBO.idCat + "' " + (listeBO.backoffices.length == 1 ? "class='solo'" : "") + " >" + listeBO.backoffices[i].titre + "</span>");
                     BackOfficesWrap.append("<a href='/" + listeBO.backoffices[i].page + "/" + listeBO.idCat + "' " + (listeBO.backoffices.length == 1 ? "class='solo'" : "") + " >" + listeBO.backoffices[i].titre + "</a>");
                 }
                 BackOfficesWrap.addClass('Display').find('span').removeClass('Removed');
                 Masque.addClass('Hidden');
             })
             .fail(function(err) {
+                console.error(err);
                 DisplayError(err.responseText);
             });
             
