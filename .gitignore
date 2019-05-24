@@ -14,11 +14,13 @@ dist
 
 # Fichiers uploadés
 public/data/actualites/*/tempoUploads/*
+# Archives (récupération du json sur serveur de prod)
+public/data/actualites/*/archivesJSON/*
 
 # Fichiers json temporaires
 *_TEMP.json
 
 # Autres
-public/data/actualites/biomedi/SimulServeurProd
-public/data/actualites/biomedi/JSON_pourDev
+SimulServeurProd
+JustePourDev
 
