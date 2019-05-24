@@ -36,7 +36,11 @@ router.get('/Actualites/:idcat', checkAccessUser, async function(req, res, next)
         const role = _.filter(config.get('roles'), function(r) { return r.idCat == req.params.idcat }); // Récupération du role
         const directoryPath = getDirectoryPath(req, role);
         const nomCatShort = role[0].nomCatShort;
-        /// Check si existence du fichier '*_TEMP.json'
+
+        // Check si existence du fichier '*.json' et si n'existe pas on le créé
+        await CheckJSONFileExist(directoryPath, nomCatShort);
+        
+        // Check si existence du fichier '*_TEMP.json'
         let isTempFileExists = await CheckTempFileExist(directoryPath, nomCatShort);
         // Si IsTempFileExists = true, on le lit, sinon on lit le fichier qui n'est pas '*_TEMP.json'
         let pathJsonFile = path.join(directoryPath, "json_" + nomCatShort + (isTempFileExists ? "_TEMP" : "") + ".json"); // Pour obtenir le path pour lire/écrire le fichier .json
@@ -160,7 +164,7 @@ router.get('/Actualites/:idcat/newLink/:typeLien', checkAccessUser, async functi
 
 
 // Click sur 'modifier un lien' : Récupération d'interface de saisie
-router.post('/Actualites/:idcat/modifLink', checkAccessUser, async function(req, res, next) {        console.log(colors.bgYellow.black("router.get('/Actualites/:idcat/modifLink_V2')")); //TEST
+router.post('/Actualites/:idcat/modifLink', checkAccessUser, async function(req, res, next) {        console.log(colors.bgYellow.black("router.get('/Actualites/:idcat/modifLink')")); //TEST
     try {
         const listeFournisseurs = await getListeFournisseurs(req.params.idcat); // Récupération liste des fournisseurs pour alimenter le select en phase d'ajout/modif le lien/rubrique  
         let dataLinkToMod = JSON.parse(req.body.dataLinkToMod);
@@ -211,7 +215,7 @@ router.post('/Actualites/:idcat/upload', checkAccessUser, function(req, res, nex
         
         // Récupération du chemin
         const role = _.filter(config.get('roles'), function(r) { return r.idCat == req.params.idcat }); // Récupération du role
-        const uploadedFilesDirectory = config.get('pathFiles').rep_uploadedFiles;
+        const uploadedFilesDirectory = config.get('pathFiles').local_dir_uploadedFiles;
         //const pathForUploadFile = path.join(getDirectoryPath(req, role), uploadedFilesDirectory, inputFile.name + "_" + Date.now());
         const pathForUploadFile = path.join(getDirectoryPath(req, role), uploadedFilesDirectory, inputFile.name);
 
@@ -478,7 +482,7 @@ router.post('/Actualites/:idcat/recordDataModifLink/:idlien', checkAccessUser, a
             console.log("Suppression sur serveur de BO du fichier ds propriété 'cible_TEMP' => " + colors.bgYellow.black(lienAmodifier.cible_TEMP)); //TEST
         } 
             // 4.2 Gestion de la suppression du fichier sur serveur de prod. (Fichier uploadé lors de précédentes sessions: passage de la propriété "cible" dans "FichiersASupprEnProd", si cela n'a pas déjà été fait)   
-        if(lienAmodifier.typeLien == "fichier" &&  data.typeLien !== "-") {
+        if(lienAmodifier.typeLien == "fichier" && data.typeLien !== "-") {
             contenuJsonFile.FichiersASupprEnProd.push(lienAmodifier.cible);         
             console.log("Passage du nom de fichier ds prop. 'cible' à prop. 'FichiersASupprEnProd' pour suppression sur serveur de prod. : " + colors.bgCyan.black(lienAmodifier.cible)); //TEST
         }
@@ -530,65 +534,162 @@ router.post('/Actualites/:idcat/recordDataModifLink/:idlien', checkAccessUser, a
 
 // Mise en production sur serveur des catalogues
 router.get('/Actualites/:idcat/mep', checkAccessUser, async function(req, res, next) {        console.log(colors.bgYellow.black("router.get('/Actualites/:idcat/mep')")); //TEST
+    try {
+        // 1. Récupération des path :
+        const role = _.filter(config.get('roles'), function(r) { return r.idCat == req.params.idcat });
+        const nomCatShort = role[0].nomCatShort;
+        const configPathFiles = config.get('pathFiles');
+        const directoryPath = getDirectoryPath(req, role);
 
-    // 1. Récupération des path :
-    //  - Pour fichier "*.json" sur serveur de BO
-    //  - Pour fichier "*_TEMP.json" sur serveur de BO
-    const pathTEMPJsonFile = await getPathTEMPJsonFile(req); // Récupération du chemin du fichier '*_TEMP.json'   
-    //  - Pour fichier pdf sur serveur de BO
-    //  - Pour repertoire de destination pour "*.json" sur serveur de Prod (20.10)
-    //  - Pour repertoire de destination des fichiers pdf sur serveur de Prod (20.10)
-
-    // Voir si récupération ds ".config" de paramètres du lecteur réseau (Lettre, Login, password)
-
-    let contenuJsonFile = await readFile(pathTEMPJsonFile);     
-    let filesToSendToProd = [];
-    contenuJsonFile.rubriques.forEach(r => {
-        r.liens.forEach(l => {
-            // 2. Constitution liste des fichiers .pdf à mettre en prod.
-            if(l.typeLien_TEMP === "fichier") { filesToSendToProd.push(l.cible_TEMP); }
-            
-            // 3. Si "typeLien_TEMP" et "cible_TEMP" sont remplis, déplacer leurs valeurs ds les propriétés "typeLien" et "cible" du même lien...
-            if(l.typeLien_TEMP !== "" && l.cible_TEMP !== "") { 
-                l.typeLien = l.typeLien_TEMP;
-                l.cible = l.cible_TEMP;
-            }
-
-            // ...Suppression propriétés "typeLien_TEMP" et "cible_TEMP"
-            delete l.typeLien_TEMP;
-            delete l.cible_TEMP;
-        })
-    });
-    //console.log(filesToSendToProd.join(", ")); //TEST
-    //console.log(colors.bgWhite.blue(JSON.stringify(contenuJsonFile))); //TEST
+        const local_file_json = path.join(directoryPath, "json_" + nomCatShort + ".json");
+        //path.join(directoryPath, "json_" + nomCatShort + "_TEMP.json");
         
-    
+        // Répertoire local des fichiers uploadés
+        const local_dir_uploadedFiles = path.join(
+            directoryPath, 
+            configPathFiles.local_dir_uploadedFiles
+        );
+        // Répertoire local pour y archiver le .json qui est en prod. avant écrasement du nouveau
+        const local_dir_archives = path.join(
+            directoryPath, 
+            configPathFiles.local_dir_archives
+        );
 
-    // 4. Copie du/des fichier(s) vers serveur de prod
-    filesToSendToProd.forEach(f => {
+        // Répertoire de destination du/des fichier(s) pdf sur serveur de Prod (20.10) : A CHANGER POUR LA PROD.
+        const prod_dir_uploadedFiles = path.join(
+            directoryPath, 
+            configPathFiles.prod_dir_root, 
+            configPathFiles.prod_dir_uploadedFiles, 
+            nomCatShort
+        );
+        // Répertoire de destination pour "*.json" sur serveur de Prod (20.10) : A CHANGER POUR LA PROD.
+        const prod_file_json = path.join(
+            directoryPath, 
+            configPathFiles.prod_dir_root, 
+            configPathFiles.prod_dir_jsonFile,
+            nomCatShort,
+            "json_" + nomCatShort + ".json"
+        );
 
-    });
-    // 5. Suppression de tous les fichiers qui se trouvent ds le répertoire "tempoUploads"
+        // Pour fichier "*.json" sur serveur de BO
+        // Pour fichier "*_TEMP.json" sur serveur de BO
+        const pathTEMPJsonFile = await getPathTEMPJsonFile(req); // Récupération du chemin du fichier '*_TEMP.json'   
+        
 
-    // 6. Suppression des fichiers sur serveur de prod
-    // 7. delete de la propriété "FichiersASupprEnProd" ds le fichier .json avant mise en prod
-    
-    // 8. Récupération du fichier .json du serveur de prod sur le serveur de BO, en le renommant  au niveau du back office avec la date du jour --> permet d'avoir un historique en cas de pb !!
-    // Récupération date du jour pour nommage json à archiver
-    const d = new Date
-    const dateJour = [
-         d.getFullYear(),
-        ("0" + (d.getMonth()+1)).slice(-2),
-        ("0" + d.getDate()).slice(-2)].join('-') + 
-        "_" +
-        [d.getHours() + "h",
-        d.getMinutes() + "mn",
-        d.getSeconds() + "s"].join('');
-    
-        // 9; On supprime de fichier '.json' sur le serveur de BO et on renomme le "*_TEMP.json" en "*.json"
+        // Voir si récupération ds ".config" de paramètres du lecteur réseau (Lettre, Login, password)
 
 
-    res.send({ ok: true }); // Juste pdt phase de dev.
+        let contenuJsonFile = await readFile(pathTEMPJsonFile);     console.log(contenuJsonFile); //TEST
+        // ==EN COURS DE CHECK !!!==
+        let filesToSendToProd = [];
+        contenuJsonFile.rubriques.forEach(r => {
+            r.liens.forEach(l => {
+                // 2. Constitution liste des fichiers .pdf à mettre en prod.
+                if(l.typeLien_TEMP === "fichier") { filesToSendToProd.push(l.cible_TEMP); }
+                
+                // 3. Si "typeLien_TEMP" et "cible_TEMP" sont remplis, déplacer leurs valeurs ds les propriétés "typeLien" et "cible" du même lien...
+                if(l.typeLien_TEMP !== "" && l.cible_TEMP !== "") { 
+                    l.typeLien = l.typeLien_TEMP;
+                    l.cible = l.cible_TEMP;
+                }
+
+                // ...Suppression propriétés "typeLien_TEMP" et "cible_TEMP"
+                delete l.typeLien_TEMP;
+                delete l.cible_TEMP;
+            })
+        });
+        console.log(filesToSendToProd.join(", ")); //TEST
+        console.log(colors.bgWhite.blue(JSON.stringify(contenuJsonFile))); //TEST
+            
+        
+        // 4. ==FONCTIONNE !!!== Déplacement du/des fichier(s) du rep. local "tempoUploads" vers serveur de prod
+        // 'Promise.all()' attend que l'ensemble des promesses soient tenues => Executions en parallèle
+        try {
+            await Promise.all(filesToSendToProd.map(async f => {
+                await fse.move(path.join(local_dir_uploadedFiles, f), path.join(prod_dir_uploadedFiles, f));
+            }));
+        } catch (err) {
+            if(!err.customMsg) { err.customMsg = "Phase de copie du/des fichier(s) uploadés vers le serveur de prod." }
+            throw err;
+        }
+
+        // S'assurer que le rép.'tempoUploads' est vide ??? (méthode 'fse.emptyDir')
+        
+        // 5. ==FONCTIONNE !!!== Suppression des fichiers à supprimer sur serveur de prod
+        console.log(colors.bgCyan.yellow(contenuJsonFile.FichiersASupprEnProd)); //TEST
+        let lstMissingFilesOnProd = [];
+        if(typeof contenuJsonFile.FichiersASupprEnProd !== "undefined") {
+            try {
+                await Promise.all(contenuJsonFile.FichiersASupprEnProd.map(async f => {
+                    // Check ici si Path existe pour pouvoir avertir qu'un ou des fichiers sur serveur de prod. n'était pas présent
+                    let path_prodUploadFile = path.join(prod_dir_uploadedFiles, f);
+                    const exist = await fse.pathExists(path_prodUploadFile); // Check si fichier existe
+                    if(!exist) { lstMissingFilesOnProd.push(f); }
+
+                    await fse.remove(path_prodUploadFile); // Suppr. fichier
+                }));
+            } catch (err) {
+                if(!err.customMsg) { err.customMsg = "Phase de suppression sur serveur de prod. du/des fichier(s) des liens supprimés dans le backoffice" }
+                throw err;
+            }
+        }
+
+        // 6. ==FONCTIONNE !!!== Retrait de la propriété "FichiersASupprEnProd" ds le fichier .json avant mise en prod
+        delete contenuJsonFile.FichiersASupprEnProd;
+        // 7. Modif du fichier '*_TEMP.json' avec le JSON modifié
+        await modifFile(pathTEMPJsonFile, contenuJsonFile); 
+        
+        // 8. ==FONCTIONNE !!!== Récupération du fichier .json du serveur de prod sur le serveur de BO, 
+        // en le renommant au niveau du back office avec la date du jour --> permet d'avoir un historique en cas de pb !!
+        const d = new Date;
+        const dateJour = [
+            d.getFullYear(),
+            ("0" + (d.getMonth()+1)).slice(-2),
+            ("0" + d.getDate()).slice(-2)].join('-') + 
+            "_" +
+            [d.getHours() + "h",
+            d.getMinutes() + "mn",
+            d.getSeconds() + "s"].join('');
+
+        try {
+            await fse.copy(
+                prod_file_json, 
+                path.join(local_dir_archives, dateJour + "_json_" + nomCatShort + ".json")
+            );
+        } catch (err) {
+            if(!err.customMsg) { err.customMsg = "Phase de récupération à partir du serveur de prod. du '.json' pour archivage sur serveur du backoffice" };
+            throw err;
+        }
+        
+
+        // 9. ==FONCTIONNE !!!== On renomme le "*_TEMP.json" en "*.json" ce qui écrase le précédent "*.json",
+        // puis on supprime le "*_TEMP.json"
+        try {
+            await fse.copy(pathTEMPJsonFile, local_file_json);
+            await fse.remove(pathTEMPJsonFile);
+        } catch (err) {
+            if(!err.customMsg) { err.customMsg = "Renommage sur serveur du backoffice du fichier '*_TEMP.json' en '*.json' (ce qui écrase le précédent '*.json')" };
+            throw err;
+        }
+
+        // ==FONCTIONNE !!!== Copie du nouveau "*.json" vers serveur de prod.
+        try {
+            await fse.copy(local_file_json, prod_file_json);
+        } catch (err) {
+            if(!err.customMsg) { err.customMsg = "Copie du '*.json' mis à jour, du serveur du backoffice vers serveur de prod." };
+            throw err;
+        }
+
+        // On supprime tous les fichiers dans le répertoire 'tempoUploads'
+        // =>> A FAIRE
+
+
+        res.send({ ok: true, missingFilesOnProd: lstMissingFilesOnProd }); // Juste pdt phase de dev.
+
+    } catch (err) {
+        if(!err.customMsg) { err.customMsg = "Etape de mise en ligne"; }
+        next(err);
+    }
 });
 
 
@@ -641,6 +742,22 @@ async function modifFile(pathFile, data) {          console.log(colors.bgYellow.
     }
 }
 
+// Check si existence du fichier '*.json'
+async function CheckJSONFileExist(directoryPath, nomCatShort) {         console.log(colors.bgYellow.black("async function CheckJSONFileExist(directoryPath, nomCatShort)")); //TEST
+    const IsFileExists = await fse.pathExists(path.join(directoryPath, "json_" + nomCatShort + ".json"));
+    if(!IsFileExists) {     // Si n'existe pas...
+        try {
+            fse.writeFile(
+                path.join(directoryPath, "json_" + nomCatShort + ".json"), 
+                JSON.stringify({rubriques: []})
+            ); 
+        } catch (err) {
+            if(!err.customMsg) { err.customMsg = "Création du fichier .json suite à détection d'absence de ce fichier" }
+            throw err;
+        }
+
+    }
+}
 
 
 // Check si existence du fichier '*_TEMP.json'
@@ -660,7 +777,7 @@ async function CreateTempFile(directoryPath, nomCatShort) {         console.log(
         const pathJsonFile = path.join(directoryPath, "json_" + nomCatShort + ".json"); // Pour obtenir le path pour lire/écrire le fichier .json   
         let objectFromJson = await fse.readJson(pathJsonFile);
         // Ajout propriétés
-        objectFromJson.FichierUploadeEnCours = "";
+        //objectFromJson.FichierUploadeEnCours = "";
         objectFromJson.FichiersASupprEnProd = [];
 
         objectFromJson.rubriques.forEach(function(rubr){
@@ -683,7 +800,7 @@ async function CreateTempFile(directoryPath, nomCatShort) {         console.log(
 async function deleteLocalFile(req, fileName) {
     try {
         const role = _.filter(config.get('roles'), function(r) { return r.idCat == req.params.idcat });
-        const uploadedFilesDirectory = config.get('pathFiles').rep_uploadedFiles;
+        const uploadedFilesDirectory = config.get('pathFiles').local_dir_uploadedFiles;
         const pathJsonFile = path.join(getDirectoryPath(req, role), uploadedFilesDirectory, fileName); // Voir pour faire app.use pour avoir tt le temps les données du config
         await fse.remove(pathJsonFile);   
     } catch (err) {
@@ -707,7 +824,7 @@ function getDirectoryPath(req, role) {            console.log(colors.bgYellow.bl
         routePath = routePath.substring(routePath.indexOf('/') + 1);
         let routeFirstParam = routePath.split("/")[0];
 
-        let filesPathConfig = config.get('pathFiles.origin');
+        let filesPathConfig = config.get('pathFiles.local_dir_root');
 
         return path.join(
             appRoot, 

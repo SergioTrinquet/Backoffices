@@ -745,9 +745,13 @@ function MiseEnLigne() {
         contentType: "application/x-www-form-urlencoded; charset=UTF-8",
         beforeSend: function () { masque.removeClass('Hidden'); }
     }).done(function(data) {
+        // EN COURS
+        if(data.missingFilesOnProd.length > 0) {} // <= PREPARER UN MSG
 
-        // A FAIRE
-        masque.addClass('Hidden');
+        var text = "<div>Votre mise à jour est effectuée !</div>A bientôt.";
+        masque.removeClass('Hidden');
+        //Popin.removeClass('Hidden').html(text + "<button class='ClosePopin'>OK</button>");
+        Popin.removeClass('Hidden').html(text + "<a href='/'>OK</a>");
     })
     .fail(function(err) { 
         console.error(err); 

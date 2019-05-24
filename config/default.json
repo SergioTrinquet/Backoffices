@@ -54,11 +54,11 @@
     ],
     
     "pathFiles": {
-        "origin": "public/data",
-        "rep_uploadedFiles": "tempoUploads",
-        "rep_archives": "archives_Json",
-        "prod_rep_racine":"XMLDataCatalogues",
-        "prod_rep_uploadedFiles": "Fichiers",
-        "prod_rep_jsonFile": "Json"
+        "local_dir_root": "public/data",
+        "local_dir_uploadedFiles": "tempoUploads",
+        "local_dir_archives": "archivesJSON",
+        "prod_dir_root":"\\\\192.168.20.10\\XMLDataCatalogues",
+        "prod_dir_uploadedFiles": "Fichiers",
+        "prod_dir_jsonFile": "Json"
     } 
 }
