@@ -744,14 +744,20 @@ function MiseEnLigne() {
         url: "/Actualites/"+ idcat + "/mep",
         contentType: "application/x-www-form-urlencoded; charset=UTF-8",
         beforeSend: function () { masque.removeClass('Hidden'); }
-    }).done(function(data) {
-        // EN COURS
-        if(data.missingFilesOnProd.length > 0) {} // <= PREPARER UN MSG
+    }).done(function(data) {    
+        console.log(data); //TEST
+        var text = "<div>Votre mise à jour est effectuée !</div>";
 
-        var text = "<div>Votre mise à jour est effectuée !</div>A bientôt.";
+        // Msg pour fichiers à suppr. manquant sur serveur de prod. : Pas bloquant
+        if(data.missingFilesOnProd.length > 0) {
+            text += "<div><div>NOTE</div>\
+            <ul>Le(s) document(s) suivant(s) à supprimer sur le serveur des catalogues n'étai(en)t pas présent(s) :</ul>"
+            for (var i = 0; i < data.missingFilesOnProd.length; i++) { text += "<li>" + data.missingFilesOnProd[i] + "</li>" }
+            text += "</div>";
+        }
+
         masque.removeClass('Hidden');
-        //Popin.removeClass('Hidden').html(text + "<button class='ClosePopin'>OK</button>");
-        Popin.removeClass('Hidden').html(text + "<a href='/'>OK</a>");
+        Popin.removeClass('Hidden').html(text + "<a href='/' class='ClosePopinAndRedirect'>OK</a>");
     })
     .fail(function(err) { 
         console.error(err); 
