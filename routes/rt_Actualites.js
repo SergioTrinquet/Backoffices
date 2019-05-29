@@ -5,6 +5,7 @@ const path = require('path');
 const checkAccessUser = require('../app_modules/checkAccessUser.js'); /// Middleware pour gérer les accès en fonction des droits de l'utilisateur
 const config = require('config');
 const connectToBdd = require('../app_modules/connectToBdd.js');
+const networkDrive = require('windows-network-drive'); // Pour montage lecteur réseau
 const colors = require('colors'); //Juste pour le dev
 
 // EN COURS : Solution de l'app.use pour éviter d'appeler dans chaque router les mêmes fonctions
@@ -25,12 +26,20 @@ router.use(expressfileUpload());
 /**/
 
 
-
+//router.all('/Actualites/:idcat', checkAccessUser); // A TESTER et retirer 'checkAccessUser' de tous les router)
 
 
 // Arrivée sur la page : Chargement du contenu
 router.get('/Actualites/:idcat', checkAccessUser, async function(req, res, next) {      console.log(colors.bgYellow.black("router.get('/Actualites/:idcat')")); //TEST
-    try {       
+    try { 
+        ///// TEST /////
+        try {
+            let drives = await networkDrive.list();
+            console.log(drives);
+        } catch (err) {
+            console.log("=> " + err);
+        } 
+        ///// TEST /////  
 
         // Récupération du contenu du fichier .json
         const role = _.filter(config.get('roles'), function(r) { return r.idCat == req.params.idcat }); // Récupération du role
@@ -385,7 +394,7 @@ router.post('/Actualites/:idcat/recordLibelleRubrique/:idrubr', checkAccessUser,
 router.post('/Actualites/:idcat/recordDataNewRubriqueOrLink', checkAccessUser, async function(req, res, next) {      console.log(colors.bgYellow.black("router.post('/Actualites/:idcat/recordDataNewRubriqueOrLink')")); //TEST
     try {   
         const data = JSON.parse(req.body.newElement);
-        //console.log(data); //TEST
+        console.log(data); //TEST
         
         // 1. Check comme coté client si champs obligatoires pas remplis, avec gestion des erreurs
         if(data.idRubrique === -1) {
@@ -535,7 +544,8 @@ router.post('/Actualites/:idcat/recordDataModifLink/:idlien', checkAccessUser, a
 // Mise en production sur serveur des catalogues
 router.get('/Actualites/:idcat/mep', checkAccessUser, async function(req, res, next) {        console.log(colors.bgYellow.black("router.get('/Actualites/:idcat/mep')")); //TEST
     try {
-        // 1. Récupération des path :
+    
+        // 0. Récupération des path :
         const role = _.filter(config.get('roles'), function(r) { return r.idCat == req.params.idcat });
         const nomCatShort = role[0].nomCatShort;
         const configPathFiles = config.get('pathFiles');
@@ -557,14 +567,14 @@ router.get('/Actualites/:idcat/mep', checkAccessUser, async function(req, res, n
 
         // Répertoire de destination du/des fichier(s) pdf sur serveur de Prod (20.10) : A CHANGER POUR LA PROD.
         const prod_dir_uploadedFiles = path.join(
-            directoryPath, 
+            //directoryPath, 
             configPathFiles.prod_dir_root, 
             configPathFiles.prod_dir_uploadedFiles, 
             nomCatShort
         );
         // Répertoire de destination pour "*.json" sur serveur de Prod (20.10) : A CHANGER POUR LA PROD.
         const prod_file_json = path.join(
-            directoryPath, 
+            //directoryPath, 
             configPathFiles.prod_dir_root, 
             configPathFiles.prod_dir_jsonFile,
             nomCatShort,
@@ -576,11 +586,67 @@ router.get('/Actualites/:idcat/mep', checkAccessUser, async function(req, res, n
         const pathTEMPJsonFile = await getPathTEMPJsonFile(req); // Récupération du chemin du fichier '*_TEMP.json'   
         
 
-        // Voir si récupération ds ".config" de paramètres du lecteur réseau (Lettre, Login, password)
+        
+        /*console.log("local_file_json => " + local_file_json); //TEST
+        console.log("local_dir_uploadedFiles => " + local_dir_uploadedFiles); //TEST
+        console.log("local_dir_archives => " + local_dir_archives); //TEST
+        console.log("prod_dir_uploadedFiles => " + prod_dir_uploadedFiles); //TEST
+        console.log("prod_file_json => " + prod_file_json); //TEST*/
+
+        // Montage lecteur réseau
+        const paramsLR_lettre = config.get('lecteurReseau').lettre;
+        const paramsLR_login = config.get('lecteurReseau').login;
+        const paramsLR_password = config.get('lecteurReseau').password;
+        const PathDrive = await networkDrive.pathToWindowsPath(config.get('pathFiles').prod_dir_root); // pour avoir le path au format Windows
+        console.log(colors.bgMagenta.yellow(PathDrive)); //TEST
+
+        // Ici check si lecteur réseau existe pour le path qui nous interesse
+        try {
+            let driveLetter = await networkDrive.find(PathDrive);
+            for(var i = 0; i < driveLetter.length; i++) {
+                //if(driveLetter[i] == config.get('lecteurReseau').lettre) { console.log("driveLetter[i] => " + driveLetter[i]); }
+                await networkDrive.unmount(driveLetter[i]); // Si existe, on le(s) supprime
+                console.log("Suppression de driveLetter[i] => " + driveLetter[i]); //TEST
+            }
+        } catch (err) {
+            console.log("Pas de lecteur réseau => " + err);
+        }
+
+        // Montage lecteur réseau
+        try {
+            await networkDrive.mount(PathDrive, paramsLR_lettre, paramsLR_login, paramsLR_password);        console.log("Montage lecteur réseau : OK"); //TEST 
+        } catch (err) {
+            if(!err.customMsg) { err.customMsg = "Phase de montage du lecteur réseau pour le transfert des données lors de la mise en ligne" };
+            throw err;
+        }
 
 
-        let contenuJsonFile = await readFile(pathTEMPJsonFile);     console.log(contenuJsonFile); //TEST
-        // ==EN COURS DE CHECK !!!==
+        // 1. Récupération du fichier .json du serveur de prod sur le serveur de BO, 
+        // en le renommant au niveau du back office avec la date du jour --> permet d'avoir un historique en cas de pb !!
+        const d = new Date;
+        const dateJour = [
+            d.getFullYear(),
+            ("0" + (d.getMonth()+1)).slice(-2),
+            ("0" + d.getDate()).slice(-2)].join('-') + 
+            "_" +
+            [("0" + d.getHours()).slice(-2) + "h",
+            ("0" + d.getMinutes()).slice(-2) + "mn",
+            ("0" + d.getSeconds()).slice(-2) + "s"].join('');
+
+        try {
+            await fse.copy(
+                prod_file_json, 
+                path.join(local_dir_archives, dateJour + "_json_" + nomCatShort + ".json")
+            );
+            console.log("Copie du JSON de prod à BO pour archive : OK"); //TEST
+        } catch (err) {
+            if(!err.customMsg) { err.customMsg = "Phase de récupération à partir du serveur de prod. du '.json' pour archivage sur serveur du backoffice" };
+            throw err;
+        }
+
+
+        let contenuJsonFile = await readFile(pathTEMPJsonFile);
+        
         let filesToSendToProd = [];
         contenuJsonFile.rubriques.forEach(r => {
             r.liens.forEach(l => {
@@ -598,90 +664,81 @@ router.get('/Actualites/:idcat/mep', checkAccessUser, async function(req, res, n
                 delete l.cible_TEMP;
             })
         });
-        console.log(filesToSendToProd.join(", ")); //TEST
+        console.log("filesToSendToProd : " + filesToSendToProd.join(", ")); //TEST
         console.log(colors.bgWhite.blue(JSON.stringify(contenuJsonFile))); //TEST
             
         
-        // 4. ==FONCTIONNE !!!== Déplacement du/des fichier(s) du rep. local "tempoUploads" vers serveur de prod
-        // 'Promise.all()' attend que l'ensemble des promesses soient tenues => Executions en parallèle
+        // 4. Déplacement du/des fichier(s) du rep. local "tempoUploads" vers serveur de prod, et écrasement fichier si déjà présentsur serveur de Prod.
         try {
+            // 'Promise.all()' attend que l'ensemble des promesses soient tenues => Executions en parallèle
             await Promise.all(filesToSendToProd.map(async f => {
-                await fse.move(path.join(local_dir_uploadedFiles, f), path.join(prod_dir_uploadedFiles, f));
+                await fse.move(path.join(local_dir_uploadedFiles, f), path.join(prod_dir_uploadedFiles, f), true);
             }));
+            console.log("Copie des PDF de BO vers Prod : OK"); //TEST
         } catch (err) {
             if(!err.customMsg) { err.customMsg = "Phase de copie du/des fichier(s) uploadés vers le serveur de prod." }
             throw err;
         }
 
-        // S'assurer que le rép.'tempoUploads' est vide ??? (méthode 'fse.emptyDir')
-        
-        // 5. ==FONCTIONNE !!!== Suppression des fichiers à supprimer sur serveur de prod
+        // 5. Suppression des fichiers à supprimer sur serveur de prod
         console.log(colors.bgCyan.yellow(contenuJsonFile.FichiersASupprEnProd)); //TEST
         let lstMissingFilesOnProd = [];
         if(typeof contenuJsonFile.FichiersASupprEnProd !== "undefined") {
             try {
                 await Promise.all(contenuJsonFile.FichiersASupprEnProd.map(async f => {
+                    let path_prodUploadFile = path.join(prod_dir_uploadedFiles, f);     console.log("path_prodUploadFile : " + path_prodUploadFile); //TEST
+
                     // Check ici si Path existe pour pouvoir avertir qu'un ou des fichiers sur serveur de prod. n'était pas présent
-                    let path_prodUploadFile = path.join(prod_dir_uploadedFiles, f);
                     const exist = await fse.pathExists(path_prodUploadFile); // Check si fichier existe
                     if(!exist) { lstMissingFilesOnProd.push(f); }
 
-                    await fse.remove(path_prodUploadFile); // Suppr. fichier
+                    await fse.remove(path_prodUploadFile); // Suppr. fichier : // async/await est-il indispensable dans ce '¨Promise.all()' ?
                 }));
+                console.log("Suppression des PDF en Prod : OK"); //TEST
             } catch (err) {
                 if(!err.customMsg) { err.customMsg = "Phase de suppression sur serveur de prod. du/des fichier(s) des liens supprimés dans le backoffice" }
                 throw err;
             }
         }
 
-        // 6. ==FONCTIONNE !!!== Retrait de la propriété "FichiersASupprEnProd" ds le fichier .json avant mise en prod
+        // 6. Retrait de la propriété "FichiersASupprEnProd" ds le fichier .json avant mise en prod
         delete contenuJsonFile.FichiersASupprEnProd;
         // 7. Modif du fichier '*_TEMP.json' avec le JSON modifié
         await modifFile(pathTEMPJsonFile, contenuJsonFile); 
-        
-        // 8. ==FONCTIONNE !!!== Récupération du fichier .json du serveur de prod sur le serveur de BO, 
-        // en le renommant au niveau du back office avec la date du jour --> permet d'avoir un historique en cas de pb !!
-        const d = new Date;
-        const dateJour = [
-            d.getFullYear(),
-            ("0" + (d.getMonth()+1)).slice(-2),
-            ("0" + d.getDate()).slice(-2)].join('-') + 
-            "_" +
-            [d.getHours() + "h",
-            d.getMinutes() + "mn",
-            d.getSeconds() + "s"].join('');
+        console.log("Ecriture JSON retravaillé ds fichier JSON : OK"); //TEST
 
-        try {
-            await fse.copy(
-                prod_file_json, 
-                path.join(local_dir_archives, dateJour + "_json_" + nomCatShort + ".json")
-            );
-        } catch (err) {
-            if(!err.customMsg) { err.customMsg = "Phase de récupération à partir du serveur de prod. du '.json' pour archivage sur serveur du backoffice" };
-            throw err;
-        }
-        
-
-        // 9. ==FONCTIONNE !!!== On renomme le "*_TEMP.json" en "*.json" ce qui écrase le précédent "*.json",
+        // 8. On renomme le "*_TEMP.json" en "*.json" ce qui écrase le précédent "*.json",
         // puis on supprime le "*_TEMP.json"
         try {
             await fse.copy(pathTEMPJsonFile, local_file_json);
             await fse.remove(pathTEMPJsonFile);
+            console.log("Renommage '*_TEMP.json' en '*.json', puis suppression du '*_TEMP.json' : OK"); //TEST
         } catch (err) {
             if(!err.customMsg) { err.customMsg = "Renommage sur serveur du backoffice du fichier '*_TEMP.json' en '*.json' (ce qui écrase le précédent '*.json')" };
             throw err;
         }
 
-        // ==FONCTIONNE !!!== Copie du nouveau "*.json" vers serveur de prod.
+        // 9. Copie du nouveau "*.json" vers serveur de prod.
         try {
             await fse.copy(local_file_json, prod_file_json);
+            console.log("Copie nouveau '*.json' vers Prod : OK"); //TEST
         } catch (err) {
             if(!err.customMsg) { err.customMsg = "Copie du '*.json' mis à jour, du serveur du backoffice vers serveur de prod." };
             throw err;
         }
 
-        // On supprime tous les fichiers dans le répertoire 'tempoUploads'
+        // S'assurer que le rép.'tempoUploads' est vide ??? (méthode 'fse.emptyDir')
         // =>> A FAIRE
+
+
+        // Démontage du lecteur réseau utilisé pour le transfert des données lors de la mise en ligne
+        try {
+            await networkDrive.unmount(paramsLR_lettre);  console.log('Le networkDrive est démonté'); //TEST
+        } catch (err) {
+            if(!err.customMsg) { err.customMsg = "Démontage du lecteur réseau utilisé pour le transfert des données lors de la mise en ligne" };
+            throw err;
+        }
+
 
 
         res.send({ ok: true, missingFilesOnProd: lstMissingFilesOnProd }); // Juste pdt phase de dev.
@@ -690,6 +747,9 @@ router.get('/Actualites/:idcat/mep', checkAccessUser, async function(req, res, n
         if(!err.customMsg) { err.customMsg = "Etape de mise en ligne"; }
         next(err);
     }
+
+
+
 });
 
 
