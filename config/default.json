@@ -11,12 +11,12 @@
             "host": "smtp.office365.com",
             "port": 587,
             "secure": false,
-            "user": "No_reply@cahpp.fr",
-            "pass": "@Noreply75!"
+            "user": "XXXXXX",
+            "pass": "XXXXXX"
         },
         "mailMessage": {
             "from": "No_reply@cahpp.fr",
-            "to": "strinquet@cahpp.fr"
+            "to": "XXXXXX@cahpp.fr"
         }
     },
 
@@ -57,8 +57,14 @@
         "local_dir_root": "public/data",
         "local_dir_uploadedFiles": "tempoUploads",
         "local_dir_archives": "archivesJSON",
-        "prod_dir_root":"\\\\192.168.20.10\\XMLDataCatalogues",
+        "prod_dir_root":"XXXXXX",
         "prod_dir_uploadedFiles": "Fichiers",
         "prod_dir_jsonFile": "Json"
-    } 
+    },
+
+    "lecteurReseau": {
+        "lettre": "XXXXXX",
+        "login": "XXXXXX",
+        "password": "XXXXXX"
+    }
 }
