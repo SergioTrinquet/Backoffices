@@ -16,7 +16,7 @@ body{
 	scrollbar-3dlight-color: lightgray;
 	scrollbar-darkshadow-color: lightgray;
 	
-	text-align:left;
+	text-align: left;
 }
 
 input {
@@ -28,8 +28,8 @@ input {
 }
 
 form {
-	margin: 0px;
-	text-align:left;
+	margin: 0;
+	text-align: left;
 }
 
 img {
@@ -166,36 +166,16 @@ button:disabled {
 	cursor: not-allowed;
 }
 
-/*
-.EncartContact{
-	border:gainsboro 1px solid;
-	padding:10px;
-	width:340px;
-}
-#Resto .divCentralIndex .EncartContact {
-	background-color:#ffe7de;
-}
-#Pharma .divCentralIndex .EncartContact {
-	background-color:#e5ffcc;
-}
-
-.Mailto {
-	background:url(/Imgs/link.gif) no-repeat 0px 2px;
-	padding-left:12px;
-}
-*/
-
 .NewsAccueil{ padding: 10px 0 0 20px; }
 
 .News {
-	/*clear:both;*/
     line-height: 16px;
     padding: 3px 0;
 }
 
 .News a {
 	padding-left: 14px;
-	background: url("/Imgs/LinkArrow.png") no-repeat 4px 3px;
+	/*background: url("/Imgs/LinkArrow.png") no-repeat 4px 3px;*/    /* Utiliser ici Awesome font */
 	margin-right:6px;
 	text-decoration:none;
 	color: #3873ae;
@@ -561,36 +541,6 @@ input.error,
 }
 
 
-.MsgDemandeActivationJS {
-	width:475px;
-	line-height:12px;
-	padding:3px;
-	margin:6px;
-	color:red;
-	background-color:#fff0f0;
-	border:solid 1px #ffa7a7;
-	font-style:italic;
-}
-
-#InfoBulle{
-	position:absolute;	
-	z-index:100;
-	visibility:hidden;
-	width:210px;
-	padding: 10px 12px;
-	font-size: 11px;
-	font-weight:bold;
-	font-style:italic;
-	text-align:center;
-	color:#ffffff;
-	line-height:13px;
-	margin-left:-19px;
-	margin-top:25px;
-	background:url(/Imgs/EncartAlerte.png) no-repeat left top;
-	padding: 30px 14px 12px 14px;
-}
-
-
 
 /** CSS spécifique pour le Développement Durable **/
 #DevDur{
@@ -674,7 +624,7 @@ input.error,
 }
 
 #DevDur .BandeauTitreLeft {
-    width 600px;
+    width: 600px;
     margin-left: 0;
 }
 /*V2*/
@@ -868,13 +818,24 @@ span[class^="Class"] {
     top: 50%;
     width: 400px;
     padding: 30px;
-	box-sizing: content-box;
+	box-sizing: border-box;
     margin:-100px 0 0 -200px;
 }
 .Popin.Hidden { display: none; }
 .Popin span { font-style: italic; }
 .Popin b { font-size: 13px; }
-.ClosePopin {
+.Popin ul {
+	padding: 10px;
+	background-color: #e1dddd;
+	border-radius: 3px;
+	font-style: italic;
+	font-weight: bold;
+	font-size: 12px;
+	line-height: 1.1;
+}
+.Popin ul { margin: 2px 0; }
+.ClosePopin,
+.ClosePopinAndRedirect {
     background-color: #0072FF;
     border-width: 0;
     border-radius: 2px;
@@ -887,7 +848,12 @@ span[class^="Class"] {
     margin:15px auto 0;
     display: block;
 }
-.ClosePopin:hover { background-color: #0068E8; }
+.ClosePopinAndRedirect {
+	text-decoration: none;
+	display: inline-block;
+}
+.ClosePopin:hover,
+.ClosePopinAndRedirect:hover { background-color: #0068E8; }
 
 
 .Popin.Error {
