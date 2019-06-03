@@ -877,3 +877,21 @@ span[class^="Class"] {
 	color: #DB0000;
 }
 /* FIN Popin */
+
+
+.Bts_UpAndDown {
+	position: absolute;
+	margin: 5px 0 0 -55px;
+}
+.Bts_UpAndDown i {
+	font-size: 20px;
+	color: #556a8b;
+	margin: 0 3px;
+	cursor: pointer;
+}
+.Bts_UpAndDown i:hover { color: #364c6e; }
+.Bts_UpAndDown i.Disabled {
+	opacity: 0.2;
+	cursor: not-allowed;
+	color: #616161;
+}

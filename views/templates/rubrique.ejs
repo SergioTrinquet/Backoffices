@@ -40,7 +40,11 @@ contenuFile.forEach(function(cf) {
 
 
 
-    <div data-type="rubrique" id="<%= X %>">
+    <div data-type="rubrique" id="<%= X %>">        
+    
+        <div class="Bts_UpAndDown">
+            <i class="fas fa-arrow-circle-up  <%= (X === 0 ? 'Disabled' : '')%>" data-move="up" title="Déplacez la rubrique vers le haut" ></i><i class="fas fa-arrow-circle-down <%= ((contenuFile.length - 1) === X ? 'Disabled' : '') %>" data-move="down" title="Déplacez la rubrique vers le bas" ></i>
+        </div>
 
         <div class="BandeauTitreLeft">
             <div class="BandeauTitre_Gauche"></div>

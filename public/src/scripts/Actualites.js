@@ -50,7 +50,11 @@ $(function () {
         Popin.removeClass('Hidden').html("Vous vous êtes rendu dernièrement sur ce back office sans avoir cliqué sur le bouton 'Mettre en ligne'.<br />Peut-être avez-vous fait des modifications sans mettre en production par la suite.<button class='ClosePopin'>OK</button>");
     }
 
-    body.on('click', '.divCentralIndex a',function(e){ e.preventDefault(); }); // Liens rendus inactifs
+
+    //$('.Bts_UpAndDown > i[data-move="up"]:first, .Bts_UpAndDown > i[data-move="down"]:last').addClass('Disabled'); // On cache les 2 boutons inutiles
+
+
+    body.on('click', '.divCentralIndex a', function(e){ e.preventDefault(); }); // Liens rendus inactifs
 
     /// Evenements sur boutons liés aux rubriques et liens
     body
@@ -79,6 +83,8 @@ $(function () {
         .on('click', '[data-event="modif"] #Bt_LienWeb', function() { ModifCible('Web'); })
         
         .on('click', 'button#SubmitMiseEnLigne', function() { MiseEnLigne(); })
+
+        .on('click', '.Bts_UpAndDown > i:not(.Disabled)', function() { MoveRubrique($(this)); })
         //.on('click', '.WrapperLinkInputs select', function() { return $(this).val() }); <= Inutile
 });
 
@@ -758,6 +764,29 @@ function MiseEnLigne() {
 
         masque.removeClass('Hidden');
         Popin.removeClass('Hidden').html(text + "<a href='/' class='ClosePopinAndRedirect'>OK</a>");
+    })
+    .fail(function(err) { 
+        console.error(err); 
+        DisplayError(err.responseText);
+    });
+}
+
+
+function MoveRubrique(bt) {
+    var idx = bt.closest('[data-type="rubrique"]').attr('id');
+    var direction = bt.attr('data-move');
+    // Pour changer l'ordre des rubriques dans le .json, puis affichage du .json modifié
+    $.ajax({
+        type: "POST",
+        url: "/Actualites/"+ idcat + "/moveRubrique",    
+        data: { dataBt: JSON.stringify({idx : idx, dir: direction }) },
+        contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+        beforeSend: function () { masque.removeClass('Hidden'); }
+    }).done(function(data) {
+        //blocLien.html(htmlLien + data); // Insert du DOM ds le lien    
+
+        console.log(data); //TEST
+        masque.addClass('Hidden');
     })
     .fail(function(err) { 
         console.error(err); 

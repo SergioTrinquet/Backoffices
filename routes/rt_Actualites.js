@@ -541,6 +541,65 @@ router.post('/Actualites/:idcat/recordDataModifLink/:idlien', checkAccessUser, a
 });
 
 
+router.post('/Actualites/:idcat/moveRubrique', checkAccessUser, async function(req, res, next) {        console.log(colors.bgYellow.black("router.post('/Actualites/:idcat/moveRubrique')")); //TEST
+    try {
+        const dataBt = JSON.parse(req.body.dataBt);
+        const indexRubr = parseInt(dataBt.idx);
+        const direction = dataBt.dir;
+
+        // Récupération objet JSON à partir du fichier
+        const pathJsonFile = await getPathTEMPJsonFile(req); // Récupération du chemin du fichier '*_TEMP.json'   
+        let contenuJsonFile = await readFile(pathJsonFile); // Affectation données du fichier '*_TEMP.json' dans var.      
+        
+
+        if((direction === 'up' || direction === 'down') 
+        && !(indexRubr === 0 && direction === 'up') 
+        && !(indexRubr === contenuJsonFile.rubriques.length && direction === 'down')) {
+
+            const rubriqueToMove = contenuJsonFile.rubriques[indexRubr];
+            contenuJsonFile.rubriques.splice(indexRubr, 1); // Retrait de la rubrique du JSON 
+            let idxInsertRubr = (direction === 'up' ? indexRubr - 1 : (direction === 'down' ? indexRubr + 1 : null) );  
+            console.log("idxInsertRubr => " + idxInsertRubr);//
+
+            let newTab = [];
+            for(let i = 0; i < contenuJsonFile.rubriques.length + 1; i++) {
+                if(i < idxInsertRubr) {
+                    newTab.push(contenuJsonFile.rubriques[i]);
+                } else if(i == idxInsertRubr) {
+                    newTab.push(rubriqueToMove);
+                } else {
+                    newTab.push(contenuJsonFile.rubriques[i - 1]);
+                }
+            }
+            // Si utilisation de Lodash : Utiliser _.dropWhile, _.dropRightWhile, _.concat
+
+            /* 
+            await modifFile(pathJsonFile, contenuJsonFile); // Modif du fichier avec le nouveau JSON (sans la rubrique donc) 
+ 
+            // Envoi bloc html à la vue principale 'Actualites.ejs' avec le lien supprimé
+            res.render('templates/rubrique', { contenuFile: contenuJsonFile.rubriques }, function(err, html) {
+                if(err) { 
+                    if(!err.customMsg) { err.customMsg = "Appel du template de la rubrique suite à déplacement d'une rubrique"; }
+                    throw err;
+                } 
+                res.send(html);
+            });
+             */
+           res.send(newTab);
+
+        } else {
+            throw {customMsgComplementaire: "Problème dans la data envoyée coté back lors du click (impossibilité de traiter la demande)"};
+        }
+
+    } catch (err) {
+        if(!err.customMsg) { err.customMsg = "Etape de déplacement d'une rubrique" + (typeof err.customMsgComplementaire !== "undefined" ? " : " + err.customMsgComplementaire : ""); }
+        next(err);
+    }
+});
+
+
+
+
 // Mise en production sur serveur des catalogues
 router.get('/Actualites/:idcat/mep', checkAccessUser, async function(req, res, next) {        console.log(colors.bgYellow.black("router.get('/Actualites/:idcat/mep')")); //TEST
     try {
