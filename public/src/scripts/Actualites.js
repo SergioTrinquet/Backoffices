@@ -1,13 +1,31 @@
-/*var body = null;
-var masque = null;
-var idcat = null,
-    ClassAjoutRubrique = null,
-    CreateNewRubrique = false;
+// Webpack
+/* import $ from 'jquery';  
+import './DisplayErreurMsg';
+import '/scripts/jQuery.sortable/jquery-ui.min.js';
+import './jQuery.filer/jquery.filer.min.js'; */
+
+/*import '../styles/all.css';
+import '../styles/erreur.css';
+import '../styles/actualites.css';
+import '../styles/jQuery.filer/jquery.filer.css';
+import '../styles/jQuery.filer/themes/jquery.filer-dragdropbox-theme.css';
+var $ = require('jquery');   
+require('./DisplayErreurMsg'); 
+require('./jQuery.sortable/jquery-ui.min.js');
+require('./jQuery.filer/jquery.filer.min.js');*/
+// FIN : Webpack
+
+
+var masque,
+    Popin,
+    ClassAjoutRubrique,
+    DataFichierJson,
+    CreateNewRubrique,
+    idcat = null;
 var filerKit = null;
 var IdxRubrNvLien = null;
 
-var DataFichierJson = null; // Changer le nom de la variable
-*/
+var SubmitMiseEnLigne = null;   // 13/06/19
 
 
 /// Juste avant fermeture de la fenetre, affectation sessionStorage qui sera lisible en cas de reload (permet de détecter un reload). 
@@ -28,7 +46,9 @@ $(function () {
     DataFichierJson = {};
     CreateNewRubrique = false;
 
-    ToucheF5(); // Pour éviter reload de page
+    SubmitMiseEnLigne = $('#SubmitMiseEnLigne'); // 13/06/19
+
+    //ToucheF5(); // Pour éviter reload de page
 
     SetLinksSortable(); // Pour pouvoir changer l'ordre des liens avec du Drag&drop
 
@@ -43,15 +63,12 @@ $(function () {
         masque.addClass('Hidden');
     });
 
-    
+    // Check existence ou non du fichier '*_TEMP.json' ==> Permet de savoir si après modif sur back office, mise en ligne a été faite ou non
     /// Affichage de la popin annonçant venue précédente sur ce backoffice sans mise en ligne
     if(($("#TempFile").text() === "true") && (sessionStorage.getItem('Reloaded') == null)) {
         masque.removeClass('Hidden');
         Popin.removeClass('Hidden').html("Vous vous êtes rendu dernièrement sur ce back office sans avoir cliqué sur le bouton 'Mettre en ligne'.<br />Peut-être avez-vous fait des modifications sans mettre en production par la suite.<button class='ClosePopin'>OK</button>");
     }
-
-
-    //$('.Bts_UpAndDown > i[data-move="up"]:first, .Bts_UpAndDown > i[data-move="down"]:last').addClass('Disabled'); // On cache les 2 boutons inutiles
 
 
     body.on('click', '.divCentralIndex a', function(e){ e.preventDefault(); }); // Liens rendus inactifs
@@ -68,23 +85,21 @@ $(function () {
         .on('click', '.ClassModLien', function() { GetInterfaceSaisieModifLien($(this)); })
         .on('click', '.ClassSupprLien', function() { DeleteLink($(this)); })
         .on('click', '.ClassAnnulLien', function() { CancelInterfaceSaisie($(this)); })
-        .on('click', '.ClassEnrLien', function() { RecordModifLink($(this)); });
+        .on('click', '.ClassEnrLien', function() { RecordModifLink($(this)); })
 
-
-    /// gestion boutons création liens/rubrique
-    body
+        .on('click', '.Bts_UpAndDown > i:not(.disabled):not(.OFF)', function() { MoveRubrique($(this)); })
+        
         .on('click', '[data-event="add"] #Bt_LienFichier', function() { GetInterfaceSaisieAjout('Fichier'); })
         .on('click', '[data-event="add"] #Bt_LienWeb', function() { GetInterfaceSaisieAjout('Web'); })
-        .on('click', '#Bt_Cancel', function() { CancelInterfaceSaisie(); })
+        .on('click', '#Bt_Cancel', function() { CancelInterfaceSaisie($(this)); })
         .on('click', '#Bt_Record', function() { RecordAjout($(this)); })
 
         .on('click', '#BtChxModifCible', function() { ChoixTypeHyperlien("modif"); })
         .on('click', '[data-event="modif"] #Bt_LienFichier', function() { ModifCible('Fichier'); })
         .on('click', '[data-event="modif"] #Bt_LienWeb', function() { ModifCible('Web'); })
         
-        .on('click', 'button#SubmitMiseEnLigne', function() { MiseEnLigne(); })
+        .on('click', 'button#SubmitMiseEnLigne', function() { MiseEnLigne(); });
 
-        .on('click', '.Bts_UpAndDown > i:not(.Disabled)', function() { MoveRubrique($(this)); })
         //.on('click', '.WrapperLinkInputs select', function() { return $(this).val() }); <= Inutile
 });
 
@@ -147,7 +162,7 @@ function GetInterfaceSaisieAjout(typeLien) {
 
 
 /// Click 'Annuler' : Suppression du bloc de saisies
-function CancelInterfaceSaisie() {
+function CancelInterfaceSaisie(bt) {
     var r = confirm("Voulez-vous annuler les modifications ?");
     if (r == true) {
         if(CreateNewRubrique) { // Cas ou block 'Ajout d'une rubrique'...
@@ -158,7 +173,7 @@ function CancelInterfaceSaisie() {
             IdxRubrNvLien = null;
         } else if($("#ModifBlocklien".length > 0)) { // ...Sinon cas ou modification de lien déjà existant
             // On cache et on affiche les bons éléments pour avoir l'interface de saisie
-            bt = CancelInterfaceSaisie.arguments[0];
+            //bt = CancelInterfaceSaisie.arguments[0];
             var blocLien = bt.closest('div[data-type="lien"]');
             blocLien.find('a, .ClassModLien, .ClassSupprLien').removeClass('Hidden');
             blocLien.find('.WrapperLinkInputs').remove();
@@ -227,8 +242,9 @@ function RecordAjout(bt) {
               
             ClassAjoutRubrique.next('div').html(data); // Intégration html
             SetLinksSortable(); // On rend les liens de la rubrique 'sortable', car on a écrasé les anciens liens
-            masque.addClass('Hidden');
+            ActivateBtMEL(); // Active le Bt 'Mise en ligne'
             SortableDisableOrNot('enable');	// Changement d'ordre des liens à nouveau possible + retrait propriété 'disabled' sur boutons  
+            masque.addClass('Hidden');
         })
         .fail(function(err) { 
             console.error(err); 
@@ -437,7 +453,8 @@ function DeleteCall(data) {
         contentType: "application/x-www-form-urlencoded; charset=UTF-8",
         beforeSend: function () { masque.removeClass('Hidden'); }
     }).done(function(data) {
-        ClassAjoutRubrique.next('div').html(data); // Intégration html pour bloc nvelle rubrique
+        ClassAjoutRubrique.next('div').html(data); // Intégration html pour bloc nvelle rubrique 
+        ActivateBtMEL(); // Active le Bt 'Mise en ligne'
         SetLinksSortable(); // On rend les liens de la rubrique 'sortable', car on a écrasé les anciens liens
         masque.addClass('Hidden');
     })
@@ -469,9 +486,10 @@ function RecordModifLibelleRubrique(bt) {
         //== Comme ds fct° 'CancelModifRubrique' ==//
         blocRubrique.find('.TitreBandeau .Intitule, .ClassModRubrique, .ClassSupprRubrique').removeClass('Hidden');
         blocRubrique.find('.ClassAnnulRubrique, .ClassEnrRubrique').addClass('Hidden');
-        blocRubrique.find('#ModifLibelleRubrique').remove();  
-        // Changement d'ordre des liens à nouveau possible + retrait propriété 'disabled' sur boutons 
-        SortableDisableOrNot('enable');
+        blocRubrique.find('#ModifLibelleRubrique').remove(); 
+        
+        ActivateBtMEL(); // Active le Bt 'Mise en ligne' 
+        SortableDisableOrNot('enable'); // Changement d'ordre des liens à nouveau possible + retrait propriété 'disabled' sur boutons
         //== FIN ==//
         
         masque.addClass('Hidden');
@@ -504,6 +522,7 @@ function RecordModifLink(bt) {
     }).done(function(data) {
         lien.replaceWith(data); // Remplacement de la balise DOM du lien 
         SetLinksSortable(); // On rend les liens de la rubrique 'sortable', car on a écrasé l'ancien lien
+        ActivateBtMEL(); // Active le Bt 'Mise en ligne'
         SortableDisableOrNot('enable');	// Changement d'ordre des liens à nouveau possible + retrait propriété 'disabled' sur boutons  
         masque.addClass('Hidden');
     })
@@ -512,10 +531,34 @@ function RecordModifLink(bt) {
         DisplayError(err.responseText);
     });
 }
+
+
+// Déplacement d'une rubrique
+function MoveRubrique(bt) {
+    var idx = bt.closest('[data-type="rubrique"]').attr('id');
+    var direction = bt.attr('data-move');
+    SortableDisableOrNot('disable');
+    // Pour changer l'ordre des rubriques dans le .json, puis affichage du .json modifié
+    $.ajax({
+        type: "POST",
+        url: "/Actualites/"+ idcat + "/moveRubrique",    
+        data: { dataBt: JSON.stringify({ idx : idx, dir: direction }) },
+        contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+        beforeSend: function () { masque.removeClass('Hidden'); }
+    }).done(function(data) {
+        ClassAjoutRubrique.next('div').html(data); // Intégration html après chgmt d'ordre
+        SetLinksSortable(); // On rend les liens de la rubrique 'sortable', car on a écrasé l'ancien lien
+        
+        ActivateBtMEL(); // Active le Bt 'Mise en ligne'
+        SortableDisableOrNot('enable');
+        masque.addClass('Hidden');
+    })
+    .fail(function(err) { 
+        console.error(err); 
+        DisplayError(err.responseText);
+    });
+}
 ///== FIN Partie Rubriques et liens ==///
-
-
-
 
 
 
@@ -541,15 +584,8 @@ function GetSerialize(DivSortable) {
         url: "/Actualites/"+ idcat + "/chgmtordreliens",
         data: { OrderLinks: JSON.stringify($(DivSortable).sortable("toArray")) },
         contentType: "application/x-www-form-urlencoded; charset=UTF-8",
-        //dataType: "json", // Valable si seulement renvoi de JSON
         beforeSend: function () { masque.removeClass('Hidden'); }
     }).done(function(data) {
-        // AVEC res.send du coté de la route : On remplace le contenu des liens de la rubrique pour les nouveaux liens reçus
-        /*data.linksNewOrder.forEach(link => {
-            console.log(link); //TEST
-        });*/
-
-        // AVEC res.render du coté de la route
         // Récupération de l'index de la rubrique dont l'ordre des liens est modifié
         var idRubrique = $(DivSortable).closest('[data-type="rubrique"]').attr('id');
 
@@ -558,6 +594,8 @@ function GetSerialize(DivSortable) {
         // On rend les liens de la rubrique 'sortable', car on a écrasé les anciens liens
         SetLinksSortable();
         masque.addClass('Hidden');
+
+        ActivateBtMEL(); // Active le Bt 'Mise en ligne'
     })
     .fail(function(err) { 
         console.error(err);
@@ -569,13 +607,8 @@ function GetSerialize(DivSortable) {
 // Rend possible ou non le changement d'ordre des liens + propriété des boutons mis en disabled ou pas
 function SortableDisableOrNot(varDispOrNot) {
     $(".NewsAccueil").sortable(varDispOrNot); // Liens rendus 'sortable' ou non
-    $('.Grip')[varDispOrNot == 'disable' ? 'addClass' : 'removeClass']('disabled'); //Coloration icones sortable
-    $('button').prop('disabled', (varDispOrNot == 'disable' ? true : false)); // Bts mis en disabled ou pas
-}
-
-
-/// A FAIRE : Création de l'encart signalant l'upload d'un fichier trop lourd ou pas au bon format : VIENT DE L'ANCIENNE VERSION => VOIR SI UTILE !!
-function CreationEncartUpload() {
+    $('.Grip, .Bts_UpAndDown > i:not(.OFF)')[varDispOrNot == 'disable' ? 'addClass' : 'removeClass']('disabled'); //Coloration icones sortable
+    $('button:not(#SubmitMiseEnLigne[data-active="false"])').prop('disabled', (varDispOrNot == 'disable' ? true : false)); // Bts mis en disabled ou pas
 }
 
 
@@ -714,10 +747,9 @@ function localFileToDelete() {
 
 
 
-function ToucheF5() {
+/*function ToucheF5() {
     /// Afin d'éviter un reload qui répéterait la dernière opération réalisée avec le risque donc de supprimer à nouveau ou de dupliquer un lien.
     document.body.onkeydown = function (e) {
-        //var keycode = checkKey(e);
         var keycode = (window.event ? window.event.keyCode : e.keyCode);
         if (keycode == 116) {
             alert("Vous tentez de rafraichir la fenêtre en appuyant sur F5 !\nCeci aurait eu pour effet de répéter la dernière opération\nque vous avez réalisé : vous risquez donc de supprimer à nouveau\nou de dupliquer un lien.\nVous avez néanmoins la possibilité de rafraîchir cette page\nen cliquant sur l'icone prévue à cet effet en haut de votre navigateur.\nSi c'est le cas et que vous voyez un pop-up d'avertissement,\nsachez que vous pouvez empecher une modification\nen cliquant sur 'Annuler'.");
@@ -726,10 +758,11 @@ function ToucheF5() {
             return false;
         }
     }
-}
+}*/
 
 
-// Pour rendre les liens dans la/les rubrique(s) 'sortable'
+
+// Initialisation Pour rendre les liens dans la/les rubrique(s) 'sortable'
 function SetLinksSortable() {
     $(".NewsAccueil").sortable({ 
         containment: 'parent', 
@@ -772,24 +805,7 @@ function MiseEnLigne() {
 }
 
 
-function MoveRubrique(bt) {
-    var idx = bt.closest('[data-type="rubrique"]').attr('id');
-    var direction = bt.attr('data-move');
-    // Pour changer l'ordre des rubriques dans le .json, puis affichage du .json modifié
-    $.ajax({
-        type: "POST",
-        url: "/Actualites/"+ idcat + "/moveRubrique",    
-        data: { dataBt: JSON.stringify({idx : idx, dir: direction }) },
-        contentType: "application/x-www-form-urlencoded; charset=UTF-8",
-        beforeSend: function () { masque.removeClass('Hidden'); }
-    }).done(function(data) {
-        //blocLien.html(htmlLien + data); // Insert du DOM ds le lien    
-
-        console.log(data); //TEST
-        masque.addClass('Hidden');
-    })
-    .fail(function(err) { 
-        console.error(err); 
-        DisplayError(err.responseText);
-    });
+// 13/06/19
+function ActivateBtMEL() {
+    SubmitMiseEnLigne.attr('data-active', 'true');
 }

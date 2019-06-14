@@ -33,12 +33,12 @@ router.use(expressfileUpload());
 router.get('/Actualites/:idcat', checkAccessUser, async function(req, res, next) {      console.log(colors.bgYellow.black("router.get('/Actualites/:idcat')")); //TEST
     try { 
         ///// TEST /////
-        try {
+        /*try {
             let drives = await networkDrive.list();
             console.log(drives);
         } catch (err) {
             console.log("=> " + err);
-        } 
+        }*/
         ///// TEST /////  
 
         // Récupération du contenu du fichier .json
@@ -79,7 +79,7 @@ router.get('/Actualites/:idcat', checkAccessUser, async function(req, res, next)
 
 // Quand modif. => Changement d'ordre des liens,...
 router.post('/Actualites/:idcat/chgmtordreliens', checkAccessUser, async function(req, res, next) {     console.log(colors.bgYellow.black("router.post('/Actualites/:idcat/chgmtordreliens')")); //TEST
-    try {   
+    try {
         // Récupération du nvel ordre des liens dans la vue
         let orderLinks = JSON.parse(req.body.OrderLinks);
 
@@ -109,8 +109,12 @@ router.post('/Actualites/:idcat/chgmtordreliens', checkAccessUser, async functio
 
 
         // Envoi bloc html à la vue principale 'Actualites.ejs' avec les liens modifiés
-        var rubriqueModifiee = contenuJsonFile.rubriques[idxRubriqueVue];
-        res.render('templates/rubrique', { contenuFile:[rubriqueModifiee], idRubr: idxRubriqueVue }, function(err, html) {
+        let rubriqueModifiee = contenuJsonFile.rubriques[idxRubriqueVue];
+        let BtUp= false; let BtDown = false;
+        if(parseInt(idxRubriqueVue) === 0) { BtUp = true }
+        if(parseInt(idxRubriqueVue) === (contenuJsonFile.rubriques.length - 1)) { BtDown = true }
+        
+        res.render('templates/rubrique', { contenuFile:[rubriqueModifiee], idRubr: idxRubriqueVue, btsUpDownDisabled: {Up: BtUp, Down: BtDown } }, function(err, html) {
             if(err) { 
                 if(!err.customMsg) { err.customMsg = "Appel du template de la rubrique"; }
                 throw err;
@@ -561,31 +565,29 @@ router.post('/Actualites/:idcat/moveRubrique', checkAccessUser, async function(r
             let idxInsertRubr = (direction === 'up' ? indexRubr - 1 : (direction === 'down' ? indexRubr + 1 : null) );  
             console.log("idxInsertRubr => " + idxInsertRubr);//
 
-            let newTab = [];
+            let rubriquesNvelOrdre = [];
             for(let i = 0; i < contenuJsonFile.rubriques.length + 1; i++) {
                 if(i < idxInsertRubr) {
-                    newTab.push(contenuJsonFile.rubriques[i]);
+                    rubriquesNvelOrdre.push(contenuJsonFile.rubriques[i]);
                 } else if(i == idxInsertRubr) {
-                    newTab.push(rubriqueToMove);
+                    rubriquesNvelOrdre.push(rubriqueToMove);
                 } else {
-                    newTab.push(contenuJsonFile.rubriques[i - 1]);
+                    rubriquesNvelOrdre.push(contenuJsonFile.rubriques[i - 1]);
                 }
             }
+            contenuJsonFile.rubriques = rubriquesNvelOrdre;
             // Si utilisation de Lodash : Utiliser _.dropWhile, _.dropRightWhile, _.concat
 
-            /* 
             await modifFile(pathJsonFile, contenuJsonFile); // Modif du fichier avec le nouveau JSON (sans la rubrique donc) 
  
             // Envoi bloc html à la vue principale 'Actualites.ejs' avec le lien supprimé
-            res.render('templates/rubrique', { contenuFile: contenuJsonFile.rubriques }, function(err, html) {
+            res.render('templates/rubrique', { contenuFile: rubriquesNvelOrdre }, function(err, html) {
                 if(err) { 
                     if(!err.customMsg) { err.customMsg = "Appel du template de la rubrique suite à déplacement d'une rubrique"; }
                     throw err;
                 } 
                 res.send(html);
             });
-             */
-           res.send(newTab);
 
         } else {
             throw {customMsgComplementaire: "Problème dans la data envoyée coté back lors du click (impossibilité de traiter la demande)"};
@@ -727,7 +729,7 @@ router.get('/Actualites/:idcat/mep', checkAccessUser, async function(req, res, n
         console.log(colors.bgWhite.blue(JSON.stringify(contenuJsonFile))); //TEST
             
         
-        // 4. Déplacement du/des fichier(s) du rep. local "tempoUploads" vers serveur de prod, et écrasement fichier si déjà présentsur serveur de Prod.
+        // 4. Déplacement du/des fichier(s) du rep. local "tempoUploads" vers serveur de prod, et écrasement fichier si déjà présent sur serveur de Prod.
         try {
             // 'Promise.all()' attend que l'ensemble des promesses soient tenues => Executions en parallèle
             await Promise.all(filesToSendToProd.map(async f => {
@@ -799,15 +801,12 @@ router.get('/Actualites/:idcat/mep', checkAccessUser, async function(req, res, n
         }
 
 
-
-        res.send({ ok: true, missingFilesOnProd: lstMissingFilesOnProd }); // Juste pdt phase de dev.
+        res.send({ ok: true, missingFilesOnProd: lstMissingFilesOnProd });
 
     } catch (err) {
         if(!err.customMsg) { err.customMsg = "Etape de mise en ligne"; }
         next(err);
     }
-
-
 
 });
 

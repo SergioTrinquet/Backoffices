@@ -890,7 +890,8 @@ span[class^="Class"] {
 	cursor: pointer;
 }
 .Bts_UpAndDown i:hover { color: #364c6e; }
-.Bts_UpAndDown i.Disabled {
+.Bts_UpAndDown i.disabled,
+.Bts_UpAndDown i.OFF {
 	opacity: 0.2;
 	cursor: not-allowed;
 	color: #616161;

@@ -1,49 +1,16 @@
 <% 
 var X = (typeof idRubr == 'undefined' ? 0 : idRubr);
+
+var up = false; var down = false; 
+if(typeof btsUpDownDisabled !== 'undefined') { up = btsUpDownDisabled.Up; down = btsUpDownDisabled.Down; }
+
 contenuFile.forEach(function(cf) {
 %>
-
-
-    <% /* %>
-    <div class="BandeauTitreLeft">
-        <div class="BandeauTitre_Gauche"><!--<i class="icon-plus-sign"></i>--></div>
-        <div class="BandeauTitreRight">
-            <div class="TitreBandeau" id="Bandeau_<%= X %>">
-                <div style="float:left"><%= cf.rubrique %></div>
-                <span id="BtModifRUBR_<%=X%>" class="ClassModRubrique" onclick="ModifRubrique( this.id )">Modifier</span>
-                <span id="BtSupprRUBR_<%=X%>" class="ClassSupprRubrique" onclick="DeleteRubrique( this.id )">Supprimer</span>
-                <span id="BtAnnulRUBR_<%=X%>" class="ClassAnnulRubrique" onclick="CancelModifRubrique( this.id )">Annuler modif.</span>
-                <span id="BtEnrRUBR_<%=X%>" class="ClassEnrRubrique" onclick="ValidInfoRubrique( this.id.substring(this.id.indexOf('_',0)+1, this.id.length) )">Enregistrer</span>
-            </div>
-        </div>
-    </div>
-
-    <div class="NewsAccueil" id="GrpLinksRubr_<%= X %>">
-        <span class="ClassAjoutLien" onclick="AddLink('<%= X %>')">Ajouter un lien</span>
-        <%
-        var Y = 0;
-        cf.liens.forEach(function(lien) {
-        %>
-        <div class="News" id="News_<%=X%>_<%=Y%>">
-            <img src="/Imgs/Grip_enable.gif" alt="Cliquez ici pour déplacer le lien dans sa rubrique"/><a href="<%=lien.cible%>" target="Doc"><%=lien.intitule%></a>
-            <input type="hidden" id="SelectedFourni_Hidden" value="<%= lien.fournisseurs %>"/><!--Ajout Dina-->						
-            <span id="BtModif_<%=X%>_<%=Y%>" class="ClassModLien" onclick="ModifLink( this.id )">Modifier</span> 
-            <span id="BtSuppr_<%=X%>_<%=Y%>" class="ClassSupprLien" onclick="DeleteLink( this.id );">Supprimer</span>
-            <span id="BtAnnul_<%=X%>_<%=Y%>" class="ClassAnnulLien Hidden" onclick="CancelModifLink( this.id )">Annuler Modif.</span>
-            <span id="BtEnr_<%=X%>_<%=Y%>" class="ClassEnrLien Hidden" onclick="ValidInfoLink( this.id.substring(this.id.indexOf('_',0)+1, this.id.length) );">Enregistrer</span>
-        </div>
-        <%
-        Y++;
-        }); %>
-    </div>
-    <% */ %>
-
-
 
     <div data-type="rubrique" id="<%= X %>">        
     
         <div class="Bts_UpAndDown">
-            <i class="fas fa-arrow-circle-up  <%= (X === 0 ? 'Disabled' : '')%>" data-move="up" title="Déplacez la rubrique vers le haut" ></i><i class="fas fa-arrow-circle-down <%= ((contenuFile.length - 1) === X ? 'Disabled' : '') %>" data-move="down" title="Déplacez la rubrique vers le bas" ></i>
+            <i class="fas fa-arrow-circle-up  <%= ((X === 0 || up === true) ? 'disabled OFF' : '')%>" data-move="up" title="Déplacez la rubrique vers le haut" ></i><i class="fas fa-arrow-circle-down <%= ((X === (contenuFile.length - 1) || down === true) ? 'disabled OFF' : '') %>" data-move="down" title="Déplacez la rubrique vers le bas" ></i>
         </div>
 
         <div class="BandeauTitreLeft">
