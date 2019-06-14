@@ -1,10 +1,9 @@
 <%
-//var Y = 0;
 var Y = (typeof idxLien == 'undefined' ? 0 : idxLien);
 cf.liens.forEach(function(lien) {
 %>
 <div class="News" data-type="lien" id="<%=X%>_<%=Y%>" data-fnrs="<%= lien.fournisseurs %>" >
-    <i class="fas fa-th Grip" title="Cliquez ici pour déplacer le lien dans sa rubrique"></i><a href="<%=lien.cible%>"><%=lien.intitule%></a>
+    <i class="fas fa-th Grip" title="Cliquez ici pour déplacer le lien dans sa rubrique"></i><a href="<%=(lien.cible_TEMP !== "" ? lien.cible_TEMP : lien.cible)%>"><%=lien.intitule%></a>
     <button class="ClassModLien"><i class="fas fa-pencil-alt"></i>Modifier</button> 
     <button class="ClassSupprLien"><i class="fas fa-times"></i>Supprimer</button>
 </div>
