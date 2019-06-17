@@ -183,8 +183,8 @@ router.post('/Actualites/:idcat/modifLink', checkAccessUser, async function(req,
         const listeFournisseurs = await getListeFournisseurs(req.params.idcat); // Récupération liste des fournisseurs pour alimenter le select en phase d'ajout/modif le lien/rubrique  
         let dataLinkToMod = JSON.parse(req.body.dataLinkToMod);
         // Suppression des espaces potentiels sur chaque cfr du tableau (si saisi à la main)
-        let listeFnrs_trim = dataLinkToMod.listeFnrs.map((fnr) => fnr.trim()); 
-        dataLinkToMod.listeFnrs = listeFnrs_trim;
+        let listeFnrs_mod = dataLinkToMod.listeFnrs.map((fnr) => fnr.trim()).filter((el) => {return el !== ""});
+        dataLinkToMod.listeFnrs = listeFnrs_mod;
         
         res.render('templates/lien_modif', { listeFournisseurs: listeFournisseurs.recordset, dataLinkToMod: dataLinkToMod }, function(err, html) {
             if(err) { 
@@ -467,7 +467,8 @@ router.post('/Actualites/:idcat/recordDataModifLink/:idlien', checkAccessUser, a
         
         // 1. Check comme coté client si champs obligatoires pas remplis, avec gestion des erreurs
         if(data.intitule === "") { throw {customMsg: "Intitulé de lien manquant"}; }
-        if((data.typeLien === "-" && data.cible !== "") || data.typeLien === null) { throw {customMsg: "Propriété 'Type de lien' non spécifié"}; }
+        //if((data.typeLien === "-" && data.cible !== "") || data.typeLien === null) { throw {customMsg: "Propriété 'Type de lien' non spécifié"}; }
+        if(data.typeLien === null) { throw {customMsg: "Propriété 'Type de lien' non spécifié"}; }
         if(data.typeLien !== "-" && data.cible === "") { throw {customMsg: "Cible du lien non spécifiée"}; }
 
         // 2. Récupération objet JSON à partir du fichier
@@ -525,7 +526,7 @@ router.post('/Actualites/:idcat/recordDataModifLink/:idlien', checkAccessUser, a
         contenuJsonFile.rubriques[idx_Rubr].liens[idx_Lien] = lienAmodifier;
         await modifFile(pathJsonFile, contenuJsonFile); // Modif du fichier avec le JSON modifié
 
-        // 6. Envoi  du template du lien avec les données remplies
+        // 6. Envoi du template du lien avec les données remplies
         const dataLienModifie = {
             "intitule": data.intitule,
             "fournisseurs": data.fournisseurs.join(","),

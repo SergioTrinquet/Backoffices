@@ -97,9 +97,9 @@ $(function () {
         .on('click', '[data-event="modif"] #Bt_LienFichier', function() { ModifCible('Fichier'); })
         .on('click', '[data-event="modif"] #Bt_LienWeb', function() { ModifCible('Web'); })
         
-        .on('click', 'button#SubmitMiseEnLigne', function() { MiseEnLigne(); });
+        .on('click', 'button#SubmitMiseEnLigne', function() { MiseEnLigne(); })//;
 
-        //.on('click', '.WrapperLinkInputs select', function() { return $(this).val() }); <= Inutile
+        .on('click', '.WrapperLinkInputs select', function() { getListeFnrSelected($(this)); });
 });
 
 
@@ -284,7 +284,7 @@ function GetDataBlocSaisieLien(bt) {
         if(val_hyperlien === "") { champHyperlien.addClass('error'); erreur = true; }
     }
 
-    // Cas de modif de lien, qd hyperlien n'est pas modifié
+    // Qd hyperlien n'est pas modifié : Cas ou juste modif d'intitulé ou de fnrs ss toucher à l'hyperlien
     var champHyperlien_Mod = blockInputs.find('input[type="text"]#ChampHyperlien_Mod');
     if(champHyperlien_Mod.length > 0) { // Si présence du champ d'affichage de l'Hyperlien pour modification
         uploadOrURL = "-";
@@ -300,7 +300,8 @@ function GetDataBlocSaisieLien(bt) {
     return {
         "intitule": val_intituleLien,
         "typeLien": uploadOrURL,
-        "cible": (uploadOrURL === "fichier" ? DataFichierJson.FichierUploadeEnCours : (uploadOrURL === "URL" ? val_hyperlien : "")),
+        //"cible": (uploadOrURL === "fichier" ? DataFichierJson.FichierUploadeEnCours : (uploadOrURL === "URL" ? val_hyperlien : "")),
+        "cible": (uploadOrURL === "fichier" ? DataFichierJson.FichierUploadeEnCours : (uploadOrURL === "URL" || uploadOrURL === "-" ? val_hyperlien : "")),
         "fournisseurs": (lstFnrs === null ? [] : lstFnrs)
     }
 }
@@ -802,4 +803,12 @@ function MiseEnLigne() {
 // 13/06/19
 function SetBtMELactivable() {
     SubmitMiseEnLigne.attr('data-active', 'true');
+}
+
+
+// Calcul nb de fnr(s) sélectionné(s) dans select
+function getListeFnrSelected(select) {  
+    var selectedVal = select.val().filter(function(v) { return v !== ""; }); // Exclusion selection 'Aucun fournisseur'
+    var nb = ((select.prop('selectedIndex') === 0 && select.val().length === 1) ? 0 : selectedVal.length);
+    $(select).next('.nbFnrsSelected').text(nb + " fnr(s) sélectionné(s)");
 }
