@@ -6,20 +6,21 @@ const checkAccessUser = require('../app_modules/checkAccessUser.js'); /// Middle
 const config = require('config');
 const connectToBdd = require('../app_modules/connectToBdd.js');
 const networkDrive = require('windows-network-drive'); // Pour montage lecteur réseau
+const logger = require('../log/logConfig.js');
 const colors = require('colors'); //Juste pour le dev
 
 
-// EN COURS : Solution de l'app.use pour éviter d'appeler dans chaque router les mêmes fonctions
-/*router.use('/Actualites/:idcat', async function(req, res, next) {
+// Solution de l'app.use pour éviter d'appeler dans chaque router les mêmes fonctions
+/* router.use('/Actualites/:idcat', function(req, res, next) {
     console.log("<<<< Je suis ds le router.use >>>>"); //TEST
     try {
-        const listeFournisseurs = await getListeFournisseurs('/Actualites/' + req.params.idcat);
-        req.app.set('listeFournisseurs', listeFournisseurs.recordset);
+        const role = _.filter(config.get('roles'), function(r) { return r.idCat == req.params.idcat }); // Récupération du role
+        req.app.set('NOMCATSHORT', role[0].nomCatShort);
         next();
     } catch (err) {
         next(err);
     }
-});*/
+}); */
 
 /**/
 const expressfileUpload = require("express-fileupload");
@@ -32,11 +33,10 @@ router.use(expressfileUpload());
 
 // Arrivée sur la page : Chargement du contenu
 router.get('/Actualites/:idcat', checkAccessUser, async function(req, res, next) {      console.log(colors.bgYellow.black("router.get('/Actualites/:idcat')")); //TEST
-    try { 
+    try {
         ///// TEST /////
         /*try {
-            let drives = await networkDrive.list();
-            console.log(drives);
+            let drives = await networkDrive.list(); console.log(drives);
         } catch (err) {
             console.log("=> " + err);
         }*/
@@ -87,7 +87,7 @@ router.post('/Actualites/:idcat/chgmtordreliens', checkAccessUser, async functio
         // On isole l'index de la rubrique modifiée au niveau de la vue
         let idxRubriqueVue = orderLinks[0].substring(0, orderLinks[0].indexOf("_"));
 
-        const pathJsonFile = await getPathTEMPJsonFile(req);   //console.log(pathJsonFile); //TEST
+        const pathJsonFile = await getPathTEMPJsonFile(req);
 
         let contenuJsonFile = await readFile(pathJsonFile);  // Affectation données du fichier '*_TEMP.json' pour modifier après le contenu
 
@@ -607,7 +607,6 @@ router.post('/Actualites/:idcat/moveRubrique', checkAccessUser, async function(r
 // Mise en production sur serveur des catalogues
 router.get('/Actualites/:idcat/mep', checkAccessUser, async function(req, res, next) {        console.log(colors.bgYellow.black("router.get('/Actualites/:idcat/mep')")); //TEST
     try {
-
         const role = _.filter(config.get('roles'), function(r) { return r.idCat == req.params.idcat });
         const nomCatShort = role[0].nomCatShort;
         const directoryPath = getDirectoryPath(req, role);
@@ -816,6 +815,11 @@ router.get('/Actualites/:idcat/mep', checkAccessUser, async function(req, res, n
                 throw err;
             }
 
+            logger.log('info', 'Mise en ligne', { 
+                login: req.app.get('userName'), 
+                environnement: req.app.get('env'),
+                url: req.originalUrl
+            });
 
             res.send({ ok: true, missingFilesOnProd: lstMissingFilesOnProd });
 
