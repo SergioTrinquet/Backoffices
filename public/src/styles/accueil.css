@@ -132,6 +132,7 @@ body > div {
 #propositionBackOffices a {
     background-color: #595959;
     color:#ffffff;
+    text-decoration: none;
     border-radius: 3px;
     padding: 10px;
     margin: 18px 0 0 0;

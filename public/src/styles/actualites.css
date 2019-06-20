@@ -851,7 +851,7 @@ span[class^="Class"] {
 	display: inline-block;
 }
 .ClosePopin:hover,
-.ClosePopinAndRedirect:hover { background-color: #0068E8; }
+.ClosePopinAndRedirect:hover { background-color: #0068E8 !important; }
 
 
 .Popin.Error {
