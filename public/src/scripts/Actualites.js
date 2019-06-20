@@ -37,14 +37,13 @@ window.onbeforeunload = function () {
 
 $(function () {
     body = $('body');
-    body.append("<div class='Popin Hidden'></div><div class='masque Hidden'></div>"); /// Insertion du masque gris transparent dans le DOM
+    body.append("<div class='Popin Hidden'></div><div class='masque Hidden'><i class='loader fas fa-spinner fa-pulse'></i></div>"); /// Insertion du masque gris transparent dans le DOM
     
     masque = $('.masque');
     Popin = $('.Popin');
     ClassAjoutRubrique = $('.ClassAjoutRubrique');
     DataFichierJson = {};
     CreateNewRubrique = false;
-
     SubmitMiseEnLigne = $('#SubmitMiseEnLigne'); // 13/06/19
 
     SetLinksSortable(); // Pour pouvoir changer l'ordre des liens avec du Drag&drop
@@ -206,7 +205,7 @@ function RecordAjout(bt) {
                     var val_inputRubrique = $.trim(champNewRubrique.val());
                     if(val_inputRubrique === "") { 
                         champNewRubrique.addClass('error'); 
-                        throw new Error("Vous devez remplir tous les champs pour pouvoir valider! XX");
+                        throw new Error("Vous devez remplir tous les champs pour pouvoir valider!");
                     }
                 }
 
@@ -598,6 +597,7 @@ function GetSerialize(DivSortable) {
         masque.addClass('Hidden');
 
         SetBtMELactivable(); // On rend le Bt 'Mise en ligne' activable
+        SubmitMiseEnLigne.prop('disabled', false);
     })
     .fail(function(err) { 
         console.error(err);
@@ -618,7 +618,7 @@ function ActivateButtonsAndGrips(varDispOrNot) {
 function ParametrageUploadFile(InputFile) {
     InputFile.filer({
         limit: 3, /// On limite à 3 uploads --> Ici cela correspond à 3 tentatives puisque le 2eme upload ecrase le fichier du 1er, et ainsi de suite.
-        fileMaxSizefileMaxSize: parseInt($('#UF_maxSixe').text()),
+        fileMaxSize: parseInt($('#UF_maxSixe').text()),
         extensions: $('#UF_extensions').text().split(","),
         /*onSelect: function () {
             /// Construction d'une partie du nom du fichier sur l'évènement 'onSelect' avant d'uploader le fichier
@@ -642,17 +642,21 @@ function ParametrageUploadFile(InputFile) {
             beforeSend: function () { masque.removeClass('Hidden'); },
             success: function (response) {
                 masque.addClass('Hidden');
-                //console.log(response.nomFichierUpload); //TEST
-            
-                /// Intégration ds la variable 'DataFichierJson' du nom du fichier uploadé pour l'info en cours
-                DataFichierJson.FichierUploadeEnCours = response.nomFichierUpload;
+
+                /// Intégration dans la variable 'DataFichierJson' du nom du fichier uploadé pour l'info en cours
+                if(typeof response.nomFichierUpload !== "undefined") {
+                    DataFichierJson.FichierUploadeEnCours = response.nomFichierUpload;
                 
-                filerKit = InputFile.prop("jFiler");
-                //alert("Nb de fichiers : " + filerKit.files_list.length); //TEST
-                /// IMPORTANT : Variable servant à savoir si au moins 1 fichier a été uploadé => Va servir pour vérification si upload lors de la validation de l'enregistrement du lien.
-                /// pour ne pas autoriser plus d'un fichier uploadé à la fois
-                if (filerKit.files_list.length > 0) {
-                    filerKit.disable();
+                    filerKit = InputFile.prop("jFiler");
+                    // IMPORTANT : Variable servant à savoir si au moins 1 fichier a été uploadé => Va servir pour vérification si upload
+                    // lors de la validation de l'enregistrement du lien, pour ne pas autoriser plus d'un fichier uploadé à la fois
+                    if (filerKit.files_list.length > 0) {
+                        filerKit.disable();
+                    }
+                } else if(response.detail) { // Cas ou pas de paramètre 'fileMaxSize' (propriété de InputFile.filer déterminée plus haut) et ou fichier trop lourd ou pas au bon format
+                    masque.removeClass('Hidden');
+                    Popin.removeClass('Hidden').html(response.titre + "<br/>" + response.detail  + "<button class='ClosePopin'>OK</button>");
+                    InputFile.trigger("filer.reset"); // Réinitialisation de l'encart d'affichage du fichier uploadé
                 }
 
             },
@@ -758,7 +762,7 @@ function SetLinksSortable() {
         delay: 200, 
         handle: $('.Grip'), 
         placeholder: 'ui-state-highlight', 
-        revert: 200, 
+        //revert: 200, 
         stop: function () { GetSerialize("#" + this.id) } 
     });
 }

@@ -242,15 +242,14 @@ router.post('/Actualites/:idcat/upload', checkAccessUser, function(req, res, nex
         let inputFile_Size = inputFile.size/1024/1024; // Taille du fichier à uploader exprimé en Mo 
 
         if(inputFile_Size > maxSize) { // Si fichier trop lourd...
-            next({
-                customMsg:"Fichier trop lourd !", 
-                message: "Votre fichier est trop lourd (" + inputFile_Size.toString() + "Mo). Le fichier téléchargé doit faire " + maxSize.toString() + "Mo maximum."
+            res.send({
+                titre: "Fichier trop lourd ! (" + inputFile_Size.toFixed(3) + "Mo).", 
+                detail: "Le fichier téléchargé doit faire " + maxSize.toString() + "Mo maximum." 
             });
-            //res.status(500).send({titre: "Fichier trop lourd !!! (" + inputFile_Size.toString() + "Mo).", erreur: "blabla" }); // V2 avec affichage popin d'erreur géré entièrement coté front
         } else if(extensionsAuth.indexOf(inputFile_Extension) == -1) { //...Si pas bon format...
-            next({
-                customMsg:"Format non autorisé !", 
-                message: "Format '." + inputFile_Extension + "' non autorisé. Les formats autorisés sont " + extensionsAuth.join(", ") 
+            res.send({
+                titre: "Format '." + inputFile_Extension + "' non autorisé !", 
+                detail: "Les formats autorisés sont " + extensionsAuth.join(", ") 
             });
         } else { // ...Sinon si tout va bien, téléchargement
             inputFile.mv(pathForUploadFile, function(err) {
