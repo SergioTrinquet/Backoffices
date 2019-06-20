@@ -1,31 +1,40 @@
-var SubmitMiseEnLigne = null;
+//module.exports = function() {
 
-$(function () {
-    /// Pour fermeture masque et popin
-    $('body').on("click", "#CloseEncart", function () {
-        $('#Wrapper_Encart').remove();
-        $('.masque').addClass('Hidden');
+    var SubmitMiseEnLigne = null;
 
-        if(SubmitMiseEnLigne !== null) {
-            SubmitMiseEnLigne.prop('disabled', false);
-         }
+    $(function () {
+        body = $('body');
+        Wrapper_Encart = $('#Wrapper_Encart');
+
+        /// Pour fermeture masque et popin
+        body.on("click", "#CloseEncart", function () {
+            Wrapper_Encart.remove();
+            $('.masque').addClass('Hidden');
+
+            if(SubmitMiseEnLigne !== null) {
+                SubmitMiseEnLigne.prop('disabled', false);
+            }
+        });
+
+        if($('#SubmitMiseEnLigne').length > 0) {
+            SubmitMiseEnLigne = $('#SubmitMiseEnLigne');
+        }
     });
 
-    if($('#SubmitMiseEnLigne').length > 0) {
-        SubmitMiseEnLigne = $('#SubmitMiseEnLigne');
-     }
-});
+    function DisplayError(ErreurResponseText) {
+        var thehtml = $.parseHTML(ErreurResponseText);
+        body.prepend(thehtml);
+        Wrapper_Encart
+            .addClass('retourAjax')
+            .find('#Encart')
+            .prepend("<i class='fa fa-times' id='CloseEncart' />");
 
-function DisplayError(ErreurResponseText) {
-    var thehtml = $.parseHTML(ErreurResponseText);
-    $('body').prepend(thehtml);
-    $('#Wrapper_Encart')
-        .addClass('retourAjax')
-        .find('#Encart')
-        .prepend("<i class='fa fa-times' id='CloseEncart' />");
+        if(SubmitMiseEnLigne !== null) { SubmitMiseEnLigne.prop('disabled', true) }
+    }
 
-    if(SubmitMiseEnLigne !== null) { SubmitMiseEnLigne.prop('disabled', true) }
-}
+
+
+//}
 
 /*
 function DisplayError_V2(Popin, error) {

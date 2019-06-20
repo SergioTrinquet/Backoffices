@@ -1,16 +1,15 @@
 const router = require('express').Router();
 const rolesConfig = require('config').get('roles');
 
-var dataListeDeroulante;
+const colors = require('colors'); //Juste pour le dev
 
-// Page 'Acualités' est la page par défaut
+// Page 'Actualités' est la page par défaut
 router.get('/', function(req, res, next) {
     res.redirect('/accueil');
 });
 
 router.get('/accueil', function(req, res, next) {
     try {
-        //let dataListeDeroulante = []; // réinitialisation
         dataListeDeroulante = []; // réinitialisation
         
         // Interrogation bdd pour connaitre catalogues auxquels a droit l'utilisateur
@@ -30,8 +29,6 @@ router.get('/accueil', function(req, res, next) {
 
         });
 
-        //req.app.set('dataListeDeroulante', dataListeDeroulante); //TEST
-
         res.render('Accueil', {data_ListeDeroulante: dataListeDeroulante});
 
     } catch(err) {
@@ -45,7 +42,7 @@ router.get('/accueil/:idcat', function(req, res, next) {
     try {   
         let listeBO = null;
 
-        //let dataListeDeroulante = req.app.get('dataListeDeroulante'); //TEST
+        //console.log(colors.bgRed.yellow(JSON.stringify(dataListeDeroulante))); //TEST
 
         dataListeDeroulante.forEach(function(roleConf) {
             if(roleConf.idCat == req.params.idcat) {
@@ -56,7 +53,6 @@ router.get('/accueil/:idcat', function(req, res, next) {
                 }; 
             }
         });
-        //console.log("listeBO : " + JSON.stringify(listeBO)); //TEST
         res.send({ liste_BO: listeBO });
 
     } catch(err) {

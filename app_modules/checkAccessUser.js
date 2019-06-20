@@ -3,7 +3,6 @@ const logger = require('../log/logConfig.js');
 const _ = require('lodash');
 
 module.exports = function(req, res, next) {     console.log("On est dans checkAccessUser.js"); //TEST
-
     try {
 
         /// 1. Récupération du nom de la page sur laquelle a lieu la requête
@@ -23,7 +22,6 @@ module.exports = function(req, res, next) {     console.log("On est dans checkAc
             logger.log('error', "Authentification : Pas de rôle existant pour la page '" + nomPageUrl + "'.");
             res.render('AccesRefuse', {msgAccesRefuse: "Il n'existe pas de role pour accéder à la page '" + nomPageUrl + "'"});
         } else if (!_.includes(req.app.get('Rights'), roleForThisPage[0].role)) { // ... Si utilisateur n'a pas le role correspondant à cette page...
-            //logger.log('error', "Authentification : Pas de rôle pour '" + nomUtilisateur + "'.");
             logger.log('error', "Authentification : Pas de rôle pour '" + req.app.get('userName') + "'.");
             res.render('AccesRefuse', {msgAccesRefuse: 'Vous n\'avez pas les droits pour accéder à cette page.'});
         }else { // ...Sinon on continue...
@@ -31,7 +29,7 @@ module.exports = function(req, res, next) {     console.log("On est dans checkAc
         }
 
     } catch (error) {
-        throw error;
+        next(error);
     }
 
 }
