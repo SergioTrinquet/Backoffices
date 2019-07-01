@@ -10,7 +10,8 @@ router.get('/', function(req, res, next) {
 
 router.get('/accueil', function(req, res, next) {
     try {
-        dataListeDeroulante = []; // réinitialisation
+        //dataListeDeroulante = []; // V1 : variable globale
+        let dataListeDeroulante = []; // V2
         
         // Interrogation bdd pour connaitre catalogues auxquels a droit l'utilisateur
         rolesConfig.forEach(function(roleConf) {
@@ -29,6 +30,8 @@ router.get('/accueil', function(req, res, next) {
 
         });
 
+        req.session.dataLstDer = dataListeDeroulante; //V2
+
         res.render('Accueil', {data_ListeDeroulante: dataListeDeroulante});
 
     } catch(err) {
@@ -43,6 +46,8 @@ router.get('/accueil/:idcat', function(req, res, next) {
         let listeBO = null;
 
         //console.log(colors.bgRed.yellow(JSON.stringify(dataListeDeroulante))); //TEST
+        dataListeDeroulante = req.session.dataLstDer; // V2
+        console.log(colors.bgRed.yellow(req.session.dataLstDer)); //V2 : TEST
 
         dataListeDeroulante.forEach(function(roleConf) {
             if(roleConf.idCat == req.params.idcat) {
