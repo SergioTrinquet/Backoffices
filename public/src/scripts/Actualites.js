@@ -1,10 +1,5 @@
 // Webpack
-/* import $ from 'jquery';  
-import './DisplayErreurMsg';
-import '/scripts/jQuery.sortable/jquery-ui.min.js';
-import './jQuery.filer/jquery.filer.min.js'; */
-
-/*import '../styles/all.css';
+/* import '../styles/masque.css';
 import '../styles/erreur.css';
 import '../styles/actualites.css';
 import '../styles/jQuery.filer/jquery.filer.css';
@@ -24,7 +19,7 @@ var masque,
     idcat = null;
 var filerKit = null;
 var IdxRubrNvLien = null;
-var SubmitMiseEnLigne = null;   // 13/06/19
+var SubmitMiseEnLigne = null;
 
 
 /// Juste avant fermeture de la fenetre, affectation sessionStorage qui sera lisible en cas de reload (permet de détecter un reload). 
@@ -44,7 +39,7 @@ $(function () {
     ClassAjoutRubrique = $('.ClassAjoutRubrique');
     DataFichierJson = {};
     CreateNewRubrique = false;
-    SubmitMiseEnLigne = $('#SubmitMiseEnLigne'); // 13/06/19
+    SubmitMiseEnLigne = $('#SubmitMiseEnLigne');
 
     SetLinksSortable(); // Pour pouvoir changer l'ordre des liens avec du Drag&drop
 
@@ -96,7 +91,7 @@ $(function () {
         .on('click', '[data-event="modif"] #Bt_LienFichier', function() { ModifCible('Fichier'); })
         .on('click', '[data-event="modif"] #Bt_LienWeb', function() { ModifCible('Web'); })
         
-        .on('click', 'button#SubmitMiseEnLigne', function() { MiseEnLigne(); })//;
+        .on('click', 'button#SubmitMiseEnLigne', function() { MiseEnLigne(); })
 
         .on('click', '.WrapperLinkInputs select', function() { getListeFnrSelected($(this)); });
 });
@@ -138,11 +133,8 @@ function GetInterfaceSaisieAjout(typeLien) {
 
             if(typeof IdxRubrNvLien === "number") { // Check si var est présente
                 var goodRubrique = $("[data-type='rubrique']").eq(IdxRubrNvLien);
-                
-                /* V1 *///goodRubrique.find("button.ClassAjoutLien").after("<div></div>").next('div').html(data); // Insert ds un div créé à cette occasion, après bt 'ClassAjoutLien'
-                //$('#DivNewLink').unwrap(); // Retrait du div parent qui contient le html, sans supprimer le html
 
-                /* V1 */goodRubrique.find("button.ClassAjoutLien").after("<div id='NewBlocklien'></div>").next('div').html(data); // Insert ds un div créé à cette occasion, après bt 'ClassAjoutLien'
+                goodRubrique.find("button.ClassAjoutLien").after("<div id='NewBlocklien'></div>").next('div').html(data); // Insert ds un div créé à cette occasion, après bt 'ClassAjoutLien'
                 if(typeLien === "Fichier") { ParametrageUploadFile($('#NewBlocklien input[type="file"]')); } // Paramétrage de l'upload file
                 masque.addClass('Hidden');
             } else {
@@ -171,7 +163,6 @@ function CancelInterfaceSaisie(bt) {
             IdxRubrNvLien = null;
         } else if($("#ModifBlocklien".length > 0)) { // ...Sinon cas ou modification de lien déjà existant
             // On cache et on affiche les bons éléments pour avoir l'interface de saisie
-            //bt = CancelInterfaceSaisie.arguments[0];
             var blocLien = bt.closest('div[data-type="lien"]');
             blocLien.find('a, .ClassModLien, .ClassSupprLien').removeClass('Hidden');
             blocLien.find('.WrapperLinkInputs').remove();
@@ -207,6 +198,7 @@ function RecordAjout(bt) {
                         champNewRubrique.addClass('error'); 
                         throw new Error("Vous devez remplir tous les champs pour pouvoir valider!");
                     }
+                    CreateNewRubrique = false; // Réinitialisation
                 }
 
                 // Passage de l'index de la rubrique
@@ -296,13 +288,25 @@ function GetDataBlocSaisieLien(bt) {
         throw new Error("Vous devez remplir tous les champs pour pouvoir valider!");
     }
 
+    // Version Originale
+    /*return {
+        "intitule": val_intituleLien,
+        "typeLien": uploadOrURL,
+        "cible": (uploadOrURL === "fichier" ? DataFichierJson.FichierUploadeEnCours : (uploadOrURL === "URL" || uploadOrURL === "-" ? val_hyperlien : "")),
+        "fournisseurs": (lstFnrs === null ? [] : lstFnrs)
+    }*/
+
+    // Nouvelle version : Ajouté le 09/07/19
+    var uploadedFile = DataFichierJson.FichierUploadeEnCours;
+    if(typeof DataFichierJson.FichierUploadeEnCours !== "undefined") { delete DataFichierJson.FichierUploadeEnCours }; // Réinitialisation
+
     return {
         "intitule": val_intituleLien,
         "typeLien": uploadOrURL,
-        //"cible": (uploadOrURL === "fichier" ? DataFichierJson.FichierUploadeEnCours : (uploadOrURL === "URL" ? val_hyperlien : "")),
-        "cible": (uploadOrURL === "fichier" ? DataFichierJson.FichierUploadeEnCours : (uploadOrURL === "URL" || uploadOrURL === "-" ? val_hyperlien : "")),
+        "cible": (uploadOrURL === "fichier" ? uploadedFile : (uploadOrURL === "URL" || uploadOrURL === "-" ? val_hyperlien : "")),
         "fournisseurs": (lstFnrs === null ? [] : lstFnrs)
     }
+
 }
 
 
@@ -345,8 +349,6 @@ function ModifLibelleRubrique(bt) {
 function GetInterfaceSaisieModifLien(bt) {
     ActivateButtonsAndGrips('disable'); // Changement d'ordre des liens rendu impossible + ajout prop. des boutons en disabled
     
-    if(typeof DataFichierJson.FichierUploadeEnCours !== "undefined") { delete DataFichierJson.FichierUploadeEnCours }; // Réinitialisation
-
     var blocLien = bt.closest('div[data-type="lien"]');
     var baliseLien = blocLien.find('a');
     baliseLien.addClass('Hidden');
@@ -590,7 +592,7 @@ function GetSerialize(DivSortable) {
         // Récupération de l'index de la rubrique dont l'ordre des liens est modifié
         var idRubrique = $(DivSortable).closest('[data-type="rubrique"]').attr('id');
 
-        $('[data-type="rubrique"][id="' + idRubrique + '"]').html(data); // Remplacement de ts les liens existants par le html reçu du coté back correspondant à ces m^mes liens mais avec des id modifiés
+        $('[data-type="rubrique"][id="' + idRubrique + '"]').replaceWith(data); // Remplacement de ts les liens existants par le html reçu du coté back correspondant à ces m^mes liens mais avec des id modifiés
 
         // On rend les liens de la rubrique 'sortable', car on a écrasé les anciens liens
         SetLinksSortable();
@@ -796,6 +798,7 @@ function MiseEnLigne() {
 
         masque.removeClass('Hidden');
         Popin.removeClass('Hidden').html(content);
+        $('.loader').addClass('Hidden');
     })
     .fail(function(err) { 
         console.error(err); 
@@ -804,7 +807,7 @@ function MiseEnLigne() {
 }
 
 
-// 13/06/19
+
 function SetBtMELactivable() {
     SubmitMiseEnLigne.attr('data-active', 'true');
 }
