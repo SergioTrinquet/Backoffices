@@ -274,10 +274,9 @@ button:disabled {
 	font-size: 12px;
 	cursor: pointer;
     padding: 3px 20px;
-    margin: 0 5px 0 80px;
 }
 #Bt_Record { margin: 0 0 0 5px; }
-#Bt_Cancel { margin: 0 5px 0 80px; }
+#Bt_Cancel { margin: 0 5px 0 100px; }
 
 input,
 .WrapperLinkInputs select {
@@ -333,7 +332,7 @@ input.error,
 	display: inline-block;
 	text-align: right;
 	vertical-align: top;
-	width: 80px;
+	width: 100px;
 }
 
 #BtChxModifCible {
