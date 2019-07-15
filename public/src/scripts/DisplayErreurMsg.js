@@ -1,4 +1,4 @@
-//module.exports = function() {
+//module.exports = function() { // Pour Webpack
 
     var SubmitMiseEnLigne = null;
 
@@ -34,7 +34,7 @@
 
 
 
-//}
+//} // Pour Webpack
 
 /*
 function DisplayError_V2(Popin, error) {

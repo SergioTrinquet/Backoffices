@@ -31,12 +31,12 @@
                 {
                     "titre": "Page actualités",
                     "page": "Actualites",
-                    "uploadFile": {"maxSize": 4, "extensionsAutorisees": ["pdf", "xls", "xlsx"] }
-                }, 
+                    "uploadFile": {"maxSize": 5, "extensionsAutorisees": ["pdf", "xls", "xlsx"] }
+                }/*, 
                 {
                     "titre": "Promotions",
                     "page": "Promos"
-                }
+                }*/
             ]
         },
         {
@@ -48,7 +48,7 @@
                 {
                     "titre": "Page actualités",
                     "page": "Actualites",
-                    "uploadFile": {"maxSize": 4, "extensionsAutorisees": ["pdf", "xls", "xlsx"] }
+                    "uploadFile": {"maxSize": 5, "extensionsAutorisees": ["pdf", "xls", "xlsx"] }
                 }
             ]
         }

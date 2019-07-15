@@ -1,6 +1,5 @@
 const sql = require('mssql');
 var dbConfig = require('config').get('dbConfig');
-
 const colors = require('colors'); // Pour le dev.
 
 module.exports = async function(requete) {

@@ -633,14 +633,14 @@ router.get('/Actualites/:idcat/mep', checkAccessUser, async function(req, res, n
                 configPathFiles.local_dir_archives
             );
 
-            // Répertoire de destination du/des fichier(s) pdf sur serveur de Prod (20.10) : A CHANGER POUR LA PROD.
+            // Répertoire de destination du/des fichier(s) pdf sur serveur de Prod (20.10)
             const prod_dir_uploadedFiles = path.join(
                 //directoryPath, 
                 configPathFiles.prod_dir_root, 
                 configPathFiles.prod_dir_uploadedFiles, 
                 nomCatShort
             );
-            // Répertoire de destination pour "*.json" sur serveur de Prod (20.10) : A CHANGER POUR LA PROD.
+            // Répertoire de destination pour "*.json" sur serveur de Prod (20.10)
             const prod_file_json = path.join(
                 //directoryPath, 
                 configPathFiles.prod_dir_root, 

@@ -1,3 +1,12 @@
+// Webpack
+/*import '../styles/masque.css';
+import '../styles/erreur.css';
+import '../styles/accueil.css';
+var $ = require('jquery');
+require('./DisplayErreurMsg');
+*/
+
+
 $(function () {
     var BackOfficesWrap = $('#propositionBackOffices > div');
     masque = $(".masque");
@@ -33,9 +42,6 @@ $(function () {
 
     });
 
-    /*BackOfficesWrap.on('click', 'span', function() {
-        console.log($(this).attr('data-href')); //TEST
-    });*/
 
 });
 
