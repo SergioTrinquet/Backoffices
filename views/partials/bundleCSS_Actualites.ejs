@@ -1,4 +1,23 @@
+    <% if(ENV === 'development') { %>
+    
     <% include ./bundleCSS %>
+    <link href="/Styles/masque.css" type="text/css" rel="stylesheet" />
     <link href="/styles/actualites.css" rel="stylesheet" type="text/css" />
     <link href="/styles/jQuery.filer/jquery.filer.css" type="text/css" rel="stylesheet" /><!-- Pour les file upload -->
     <link href="/styles/jQuery.filer/themes/jquery.filer-dragdropbox-theme.css" type="text/css" rel="stylesheet" /><!-- Pour les file upload -->
+    <link href="/styles/jQuery.sortable/jquery-ui.min.css" type="text/css" rel="stylesheet" /><!-- Pour les liens sortable -->
+
+    <% } else { %>
+
+    <link href="https://fonts.googleapis.com/css?family=Maven+Pro:400,500,700" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+    
+
+    <!-- Avec Webpack --><!--
+    <link href="/styles/Actualites.bundle.css" rel="stylesheet" type="text/css" />
+    -->
+
+    <!-- Avec Gulp -->
+    <link href="/styles/actualites.bundle.css" rel="stylesheet" type="text/css" />
+
+    <% } %>

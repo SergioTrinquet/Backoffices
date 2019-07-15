@@ -1,0 +1,16 @@
+
+<% if(ENV === 'development') { %>
+
+    <% include ./bundleJS %>
+    <script type="text/javascript" src="/scripts/Accueil.js"></script>
+
+<% } else { %>
+
+    <!-- Avec Webpack --><!--
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script type="text/javascript" src="/scripts/Accueil.bundle.prod.js"></script>
+    -->
+
+    <script type="text/javascript" src="/scripts/Accueil.bundle.js"></script>
+    
+<% } %>
