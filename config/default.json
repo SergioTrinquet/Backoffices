@@ -51,6 +51,19 @@
                     "uploadFile": {"maxSize": 5, "extensionsAutorisees": ["pdf", "xls", "xlsx"] }
                 }
             ]
+        },
+        {
+            "role": "BackOfficeCatalogueHandicap",
+            "nomCat": "Handicap",
+            "nomCatShort": "handi",
+            "idCat": 13,
+            "backoffices": [
+                {
+                    "titre": "Page actualités",
+                    "page": "Actualites",
+                    "uploadFile": {"maxSize": 5, "extensionsAutorisees": ["pdf", "xls", "xlsx"] }
+                }
+            ]
         }
     ],
     
