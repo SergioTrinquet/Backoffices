@@ -19,7 +19,7 @@
     "express-fileupload": "^1.1.4",
     "fs-extra": "^7.0.1",
     "helmet": "^3.16.0",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.13",
     "mssql": "^5.0.5",
     "nodemailer": "^6.2.1",
     "underscore": "^1.9.1",
